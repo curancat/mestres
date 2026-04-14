@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>Miraculous RPG - Mestre</title>
+<title>Miraculous RPG - Mestre & Jogador</title>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
@@ -29,12 +29,14 @@
 }
 * { box-sizing: border-box; }
 body {
-  margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center;
+  margin: 0; height: 100vh;
+  display: flex; justify-content: center; align-items: center;
   background: var(--bg-main); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  user-select: none; overflow: hidden; color: var(--text-main);
+  user-select: none; overflow: hidden;
+  color: var(--text-main);
 }
 
-/* --- LAYOUT DO DISPOSITIVO --- */
+/* --- LAYOUT DO DISPOSITIVO MOBILE --- */
 .device {
   width: 100%; max-width: 420px; height: 100%; max-height: 880px;
   background: var(--bg-main); position: relative; 
@@ -46,11 +48,14 @@ body {
 
 /* --- ESTRUTURA --- */
 .screen { width: 100%; height: 100%; background: var(--bg-surface); display: flex; flex-direction: column; position: relative; }
-.header { height: 60px; display: flex; align-items: center; padding: 0 15px; background: var(--bg-card); border-bottom: 1px solid var(--border); font-weight: bold; font-size: 18px; flex-shrink: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+.header { height: 60px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 15px; background: var(--bg-card); border-bottom: 1px solid var(--border); font-weight: bold; font-size: 16px; flex-shrink: 0; z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); gap: 10px; }
 .content { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
 
 /* --- PÁGINAS --- */
-.page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-surface); display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 20; }
+.page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-surface); display: flex;
+  flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 20; }
 .page.active { transform: translateX(0); }
 
 /* --- COMPONENTES --- */
@@ -61,13 +66,15 @@ body {
 .icon-box { width: 60px; height: 60px; background: var(--bg-card); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 28px; border: 1px solid var(--border); }
 
 /* --- FORMULÁRIOS --- */
-input, textarea, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); margin-bottom: 10px; outline: none; font-size: 14px; }
+input, textarea, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-main); margin-bottom: 10px; outline: none; font-size: 14px; }
 input:focus { border-color: var(--primary); }
 button { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; background: var(--primary); color: var(--primary-contrast); cursor: pointer; transition: 0.2s; font-size: 14px; }
 button:active { filter: brightness(0.8); }
-.back-btn { width: auto; background: transparent; color: var(--primary); font-size: 24px; padding: 0 15px 0 0; margin: 0; }
+.btn-small { width: auto; padding: 6px 12px; font-size: 12px; }
+.back-btn { width: auto; background: transparent; color: var(--primary); font-size: 24px; padding: 0 10px 0 0; margin: 0; }
 
-/* --- CHAT --- */
+/* --- CHAT E SESSÃO --- */
 .chat-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
 .chat-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 2; }
 .msg { max-width: 85%; padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; position: relative; word-wrap: break-word; }
@@ -76,6 +83,7 @@ button:active { filter: brightness(0.8); }
 .msg.system { align-self: center; font-size: 11px; color: var(--text-sub); border: 1px dashed var(--border); background: transparent; width: 100%; text-align: center; }
 .msg.narrate { width: 100%; background: #311b92; border: 1px solid #4527a0; text-align: center; font-style: italic; color: #fff; }
 .msg.npc { align-self: flex-start; background: #37474f; border: 1px solid #546e7a; color: #fff; border-bottom-left-radius: 2px;}
+.msg.power { align-self: center; background: linear-gradient(45deg, #2a0845, #6441A5); border: 1px solid #d500f9; color: #fff; font-weight: bold; width: 95%; text-align: center; box-shadow: 0 0 10px rgba(213,0,249,0.3); }
 
 /* --- NÉVOA & BOSS --- */
 .fog-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--fog); z-index: 1; pointer-events: none; display: none; backdrop-filter: blur(2px); }
@@ -86,16 +94,18 @@ button:active { filter: brightness(0.8); }
 /* --- MODAL E BARRAS --- */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
 .modal-content { background: var(--bg-surface); width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
-.stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
 .gm-toolbar { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 5px; }
-.gm-toolbar button { white-space: nowrap; font-size: 12px; padding: 8px; }
 .hp-bar-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; margin-top: 5px; }
 .hp-bar-fill { height: 100%; background: #d32f2f; transition: width 0.3s; }
 .sanity-fill { background: #ab47bc; }
 .miraculous-tag { background: linear-gradient(45deg, #d500f9, #6200ea); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; border: 1px solid #fff; }
-
 .skill-box { background: #252525; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; }
 .skill-box b { color: var(--primary); font-size: 14px;}
+
+/* Estilo do scrollbar para não quebrar a UI Mobile */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
 </style>
 </head>
 <body onload="init()">
@@ -111,7 +121,9 @@ button:active { filter: brightness(0.8); }
   </div>
 
   <div id="profile" class="page">
-    <div class="header"><button class="back-btn" onclick="back('profile')">‹</button> Perfil</div>
+    <div class="header">
+      <div style="display:flex; align-items:center;"><button class="back-btn" onclick="back('profile')">‹</button> Perfil</div>
+    </div>
     <div class="content">
       <div id="view-login">
         <div class="card">
@@ -138,7 +150,9 @@ button:active { filter: brightness(0.8); }
   </div>
 
   <div id="sessions" class="page">
-    <div class="header"><button class="back-btn" onclick="back('sessions')">‹</button> Mesas de RPG</div>
+    <div class="header">
+      <div style="display:flex; align-items:center;"><button class="back-btn" onclick="back('sessions')">‹</button> Mesas de RPG</div>
+    </div>
     <div class="content">
       <div class="card">
         <h4>Criar Nova Mesa</h4>
@@ -151,9 +165,14 @@ button:active { filter: brightness(0.8); }
 
   <div id="active-session" class="page">
     <div class="header">
-      <button class="back-btn" onclick="leaveTable()">‹</button> 
-      <span id="session-title" style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Mesa</span>
-      <button id="gm-tools-btn" onclick="toggleGmPanel()" style="width:auto; padding:5px 10px; font-size:12px; display:none;">👑 GM</button>
+      <div style="display:flex; align-items:center; flex:1; overflow:hidden;">
+        <button class="back-btn" onclick="leaveTable()">‹</button> 
+        <span id="session-title" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Mesa</span>
+      </div>
+      <div style="display:flex; gap:5px;">
+        <button class="btn-small" onclick="openChest()" style="background:#ffa726; color:#000;">📦 Baú</button>
+        <button id="gm-tools-btn" class="btn-small" onclick="toggleGmPanel()" style="display:none;">👑 GM</button>
+      </div>
     </div>
     
     <div class="chat-container">
@@ -168,25 +187,38 @@ button:active { filter: brightness(0.8); }
       <div id="gm-panel" style="display:none; background:var(--bg-card); padding:10px; border-bottom:1px solid var(--primary); z-index:4; position:relative;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
            <small style="color:var(--primary); font-weight:bold;">SISTEMAS GM</small>
-           <button onclick="toggleGmPanel()" style="width:auto; padding:2px 8px; font-size:10px; background:var(--danger)">X</button>
+           <button onclick="toggleGmPanel()" class="btn-small" style="background:var(--danger)">X</button>
         </div>
         <input id="gm-npc-name" type="text" placeholder="Nome do NPC (Se quiser narrar como alguém)" style="background:#000;">
         <select id="gm-target-select" style="margin-bottom:5px; background:#000;"></select>
         <div class="gm-toolbar" style="margin-top:5px;">
-          <button onclick="openGmInspect()" style="background:#42a5f5;">🔍 Inspec. Jogador</button>
-          <button onclick="toggleFog()" style="background:#78909c;">🌫️ Névoa</button>
-          <button onclick="openBossControl()" style="background:var(--boss);">👹 Chefe</button>
+          <button onclick="openGmInspect()" class="btn-small" style="background:#42a5f5;">🔍 Jogador</button>
+          <button onclick="toggleFog()" class="btn-small" style="background:#78909c;">🌫️ Névoa</button>
+          <button onclick="openBossControl()" class="btn-small" style="background:var(--boss);">👹 Chefe</button>
         </div>
       </div>
 
       <div id="session-log" class="chat-list"></div>
       
-      <div class="chat-input" style="padding:10px; background:var(--bg-card); z-index:4;">
-        <div id="player-roll-area" style="display:flex; gap:5px; margin-bottom:5px; overflow-x:auto;"></div>
+      <div class="chat-input" style="padding:10px; background:var(--bg-card); z-index:4; border-top:1px solid var(--border);">
+        <div id="player-roll-area" style="display:flex; gap:5px; margin-bottom:10px; overflow-x:auto; padding-bottom:5px;"></div>
         <div style="display:flex; gap:5px;">
-            <input id="session-msg" placeholder="Mensagem ou /narrar (Apenas GM)..." style="margin:0;" onkeydown="if(event.key==='Enter') sendSessionMsg()">
+            <input id="session-msg" placeholder="Mensagem ou /narrar (GM)..." style="margin:0;" onkeydown="if(event.key==='Enter') sendSessionMsg()">
             <button onclick="sendSessionMsg()" style="width:50px; margin:0;">➤</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-chest" class="modal" onclick="closeModal(event, 'modal-chest')">
+    <div class="modal-content">
+      <h4 style="color:#ffa726; margin-top:0;">📦 Baú Coletivo da Mesa</h4>
+      <p style="font-size:12px; color:var(--text-sub); margin-top:-10px;">Itens guardados pela equipe. Todos podem ver e retirar.</p>
+      <div id="chest-items-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px;">
+        </div>
+      <div style="display:flex; gap:5px; border-top:1px solid var(--border); padding-top:10px;">
+        <input id="new-chest-item" placeholder="Nome do Item..." style="margin:0;">
+        <button onclick="addChestItem()" style="width:80px; margin:0;">Guardar</button>
       </div>
     </div>
   </div>
@@ -255,7 +287,9 @@ button:active { filter: brightness(0.8); }
   </div>
 
   <div id="sheet" class="page">
-    <div class="header"><button class="back-btn" onclick="back('sheet')">‹</button> Ficha de Personagem</div>
+    <div class="header">
+      <div style="display:flex; align-items:center;"><button class="back-btn" onclick="back('sheet')">‹</button> Ficha do Personagem</div>
+    </div>
     <div class="content">
       <div class="card">
         <div style="display:flex; gap:15px; align-items:center;">
@@ -268,10 +302,10 @@ button:active { filter: brightness(0.8); }
         </div>
         
         <div style="margin-top:15px;">
-          <div class="stat-row"><span>Saúde (HP)</span><span id="hp-text">10/10</span></div>
+          <div class="stat-row" style="border:none;"><span>Saúde (HP)</span><span id="hp-text">10/10</span></div>
           <div class="hp-bar-bg"><div id="hp-bar" class="hp-bar-fill" style="width:100%"></div></div>
           
-          <div class="stat-row" style="margin-top:10px;"><span>Sanidade</span><span id="san-text">100/100</span></div>
+          <div class="stat-row" style="margin-top:10px; border:none;"><span>Sanidade</span><span id="san-text">100/100</span></div>
           <div class="hp-bar-bg"><div id="san-bar" class="hp-bar-fill sanity-fill" style="width:100%"></div></div>
         </div>
 
@@ -289,17 +323,17 @@ button:active { filter: brightness(0.8); }
 
       <div class="card">
         <h4>Lore & Trauma</h4>
-        <div class="stat-row" style="flex-direction:column; align-items:flex-start;">
-            <span style="color:var(--primary); font-size:11px;">HISTÓRIA</span>
+        <div class="stat-row" style="flex-direction:column; align-items:flex-start; border:none;">
+            <span style="color:var(--primary); font-size:11px; font-weight:bold;">HISTÓRIA</span>
             <span id="lore-display" style="font-size:13px; color:var(--text-sub); margin-top:5px; white-space:pre-wrap;">Vazio</span>
         </div>
-        <div class="stat-row" style="flex-direction:column; align-items:flex-start; margin-top:10px;">
-            <span style="color:var(--danger); font-size:11px;">DESVANTAGENS (TRAUMAS/MEDOS)</span>
+        <div class="stat-row" style="flex-direction:column; align-items:flex-start; margin-top:10px; border:none;">
+            <span style="color:var(--danger); font-size:11px; font-weight:bold;">DESVANTAGENS (TRAUMAS/MEDOS)</span>
             <span id="flaws-display" style="font-size:13px; color:var(--text-sub); margin-top:5px; white-space:pre-wrap;">Nenhum</span>
         </div>
       </div>
 
-      <button onclick="openEditSheet()">Editar Ficha (Nome/Lore)</button>
+      <button onclick="openEditSheet()" style="margin-bottom: 20px;">Editar Ficha (Nome/Lore)</button>
     </div>
   </div>
 
@@ -323,7 +357,7 @@ button:active { filter: brightness(0.8); }
 
 <script>
 // ==========================================
-// CONFIG FIREBASE
+// CONFIG FIREBASE (Mantenha a sua configuração original)
 // ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBykDF5TNKQHejUJTp-ue7s5CKfpJp1HV0",
@@ -367,9 +401,8 @@ function init() {
 }
 
 async function doLogin() {
-  try { 
-    await auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-pass').value); 
-  } catch(e) { alert("Erro ao entrar: " + e.message); }
+  try { await auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-pass').value); } 
+  catch(e) { alert("Erro ao entrar: " + e.message); }
 }
 
 async function doRegister() {
@@ -378,7 +411,6 @@ async function doRegister() {
     const pass = document.getElementById('login-pass').value;
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
     
-    // Schema Inicial
     await db.ref('users/' + cred.user.uid).set({
       name: "Humano " + cred.user.uid.substring(0,4),
       isGM: false,
@@ -416,7 +448,6 @@ function loadUserProfile() {
     const c = userData.char || {};
     document.getElementById('char-name-display').innerText = c.name || "Sem nome";
     
-    // Status Sobrevivência
     document.getElementById('hp-text').innerText = `${c.hp || 0}/${c.maxHp || 1}`;
     document.getElementById('hp-bar').style.width = Math.min(100, Math.max(0, ((c.hp||0)/(c.maxHp||1))*100)) + "%";
     document.getElementById('san-text').innerText = `${c.sanity || 0}/100`;
@@ -425,23 +456,19 @@ function loadUserProfile() {
     document.getElementById('fome-txt').innerText = (c.fome||0) + "%";
     document.getElementById('sede-txt').innerText = (c.sede||0) + "%";
     document.getElementById('calor-txt').innerText = (c.calor||0) + "%";
-
-    // Textos
+    
     document.getElementById('lore-display').innerText = c.lore || "Sua história...";
     document.getElementById('flaws-display').innerText = c.flaws || "Sem traumas definidos.";
-
-    // Miraculous
+    
     const mirDiv = document.getElementById('char-miraculous-display');
     if(c.miraculous && c.miraculous !== "Nenhum") {
-        mirDiv.innerHTML = `<span class="miraculous-tag">💎 Joia: ${c.miraculous}</span>`;
+        mirDiv.innerHTML = `<span class="miraculous-tag">💎 ${c.miraculous}</span>`;
     } else {
         mirDiv.innerHTML = "";
     }
 
-    // Skills Renderização
     renderSkills(c.skills);
-
-    // Preencher Modal de Edição
+    
     document.getElementById('p-char-name').value = c.name || "";
     document.getElementById('p-char-lore').value = c.lore || "";
     document.getElementById('p-char-flaws').value = c.flaws || "";
@@ -450,12 +477,11 @@ function loadUserProfile() {
         document.getElementById('p-skill2-name').value = c.skills[1]?.name || "";
     }
 
-    // Gerar botões de rolar no chat
-    renderRollButtonsChat(c.skills);
+    renderRollButtonsChat(c.skills, c.miraculous);
   });
 }
 
-// Lógica de Rolagem Exata Conforme as Regras
+// === CORREÇÃO DA LÓGICA DE DADOS (10 OU 20 PONTOS) ===
 function calculateSkillLogic(pts, maxType) {
     let rank = "Iniciante";
     let dice = 1;
@@ -463,11 +489,27 @@ function calculateSkillLogic(pts, maxType) {
     maxType = parseInt(maxType) || 10;
 
     if (maxType === 10) {
-        if (pts >= 10) { rank = "Expert"; dice = 4 + (pts - 10); } // 10=4d20, 11=5d20...
-        else if (pts >= 5) { rank = "Intermediário"; dice = 2; } // 5 a 9 = intermediário
+        if (pts >= 10) { 
+            rank = "Expert"; 
+            dice = 4 + (pts - 10); 
+        } else if (pts >= 5) { 
+            rank = "Intermediário"; 
+            dice = 2; 
+        } else {
+            rank = "Iniciante";
+            dice = 1;
+        }
     } else if (maxType === 20) {
-        if (pts >= 15) { rank = "Expert"; dice = 4 + (pts - 15); } // ultimos 5 = expert (15=4d20...)
-        else if (pts >= 5) { rank = "Intermediário"; dice = 2; } // primeiros 10 depois do 5 = intermediário
+        if (pts >= 15) { 
+            rank = "Expert"; 
+            dice = 4 + (pts - 15); 
+        } else if (pts >= 6) { // Primeiros 5 = ini (0-5), então 6-14 é Intermediário.
+            rank = "Intermediário"; 
+            dice = 2; 
+        } else {
+            rank = "Iniciante";
+            dice = 1;
+        }
     }
     return { rank, dice };
 }
@@ -476,11 +518,9 @@ function renderSkills(skills) {
     const list = document.getElementById('skills-list');
     list.innerHTML = "";
     if(!skills || skills.length === 0) return;
-
     skills.forEach(sk => {
         if(!sk.name) return;
         const calc = calculateSkillLogic(sk.points, sk.maxType);
-        
         list.innerHTML += `
         <div class="skill-box">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -497,18 +537,15 @@ function renderSkills(skills) {
 function openEditSheet() { document.getElementById('modal-sheet-edit').style.display = 'flex'; }
 
 function saveSheetPlayer() {
-  if(!currentUser) return alert("Erro de Autenticação. Faça login novamente.");
-  
+  if(!currentUser) return;
   const s1 = document.getElementById('p-skill1-name').value;
   const s2 = document.getElementById('p-skill2-name').value;
 
-  // Atualiza usando merge seguro
   db.ref(`users/${currentUser.uid}/char`).update({
     name: document.getElementById('p-char-name').value,
     lore: document.getElementById('p-char-lore').value,
     flaws: document.getElementById('p-char-flaws').value
   });
-  
   db.ref(`users/${currentUser.uid}/char/skills/0/name`).set(s1);
   db.ref(`users/${currentUser.uid}/char/skills/1/name`).set(s2);
 
@@ -540,20 +577,17 @@ function loadTables() {
 
 function joinTable(id) {
   currentTableId = id;
-  
-  // Registra o membro na mesa
   db.ref(`tables/${id}/members/${currentUser.uid}`).update({
       name: userData.name || "Jogador",
       role: userData.isGM ? 'GM' : 'PLAYER'
   });
-
+  
   db.ref(`tables/${id}`).on('value', snap => {
     currentTableData = snap.val();
     if(!currentTableData) return;
     
     document.getElementById('session-title').innerText = currentTableData.name;
     
-    // Controle de GM
     if (userData.isGM) {
       document.getElementById('gm-tools-btn').style.display = 'block';
       loadGmControls();
@@ -562,7 +596,6 @@ function joinTable(id) {
       document.getElementById('gm-panel').style.display = 'none';
     }
 
-    // Sincronizar Névoa e Boss
     document.getElementById('fog-layer').style.display = currentTableData.fog ? 'block' : 'none';
 
     const boss = currentTableData.boss || {};
@@ -577,6 +610,7 @@ function joinTable(id) {
   });
 
   loadTableChat(id);
+  loadChestData(id); // Carrega dados do baú
   go('active-session');
 }
 
@@ -584,6 +618,7 @@ function leaveTable() {
   if(currentTableId) {
       db.ref(`tables/${currentTableId}/log`).off();
       db.ref(`tables/${currentTableId}`).off();
+      db.ref(`tables/${currentTableId}/chest`).off();
   }
   currentTableId = null;
   back('active-session');
@@ -592,16 +627,17 @@ function leaveTable() {
 function loadTableChat(id) {
   const div = document.getElementById('session-log');
   div.innerHTML = "";
-  db.ref(`tables/${id}/log`).off(); 
+  db.ref(`tables/${id}/log`).off();
   db.ref(`tables/${id}/log`).limitToLast(50).on('child_added', snap => {
     const m = snap.val();
     let cls = (m.uid === currentUser.uid && !m.isNpc) ? 'me' : 'other';
     if (m.type === 'system') cls = 'system';
     if (m.type === 'narrate') cls = 'narrate';
+    if (m.type === 'power') cls = 'power';
     if (m.isNpc) cls = 'npc';
     
     let html = `<div class="msg ${cls}">`;
-    if (m.type !== 'system' && m.type !== 'narrate') {
+    if (m.type !== 'system' && m.type !== 'narrate' && m.type !== 'power') {
         let title = m.u;
         if(m.isNpc) title = `🎭 ${m.u} (NPC)`;
         html += `<b style="font-size:11px; opacity:0.8;">${title}</b><br>`;
@@ -613,19 +649,31 @@ function loadTableChat(id) {
   });
 }
 
-function renderRollButtonsChat(skills) {
+// === BOTÕES DE ROLAGEM E PODERES MIRACULOUS ===
+function renderRollButtonsChat(skills, miraculous) {
     const area = document.getElementById('player-roll-area');
     area.innerHTML = "";
-    if(!skills) return;
-    skills.forEach(sk => {
-        if(!sk.name) return;
-        const calc = calculateSkillLogic(sk.points, sk.maxType);
-        const btn = document.createElement('button');
-        btn.innerText = `🎲 ${sk.name} (${calc.dice}d20)`;
-        btn.style = "font-size:11px; padding:6px; white-space:nowrap; background:#444;";
-        btn.onclick = () => rollDiceInChat(sk.name, calc.dice);
-        area.appendChild(btn);
-    });
+    
+    if(skills) {
+        skills.forEach(sk => {
+            if(!sk.name) return;
+            const calc = calculateSkillLogic(sk.points, sk.maxType);
+            const btn = document.createElement('button');
+            btn.innerText = `🎲 ${sk.name} (${calc.dice}d20)`;
+            btn.style = "font-size:11px; padding:6px; white-space:nowrap; background:#444;";
+            btn.onclick = () => rollDiceInChat(sk.name, calc.dice);
+            area.appendChild(btn);
+        });
+    }
+
+    if(miraculous && miraculous !== "Nenhum") {
+        const pBtn = document.createElement('button');
+        let shortName = miraculous.split(' ')[0]; // Pega só o nome do bicho
+        pBtn.innerText = `✨ Poder ${shortName}`;
+        pBtn.style = "font-size:11px; padding:6px; white-space:nowrap; background: linear-gradient(45deg, #d500f9, #6200ea); color:#fff; border:1px solid #fff;";
+        pBtn.onclick = () => rollMiraculousPower(miraculous);
+        area.appendChild(pBtn);
+    }
 }
 
 function rollDiceInChat(skillName, diceCount) {
@@ -638,6 +686,55 @@ function rollDiceInChat(skillName, diceCount) {
         total += r;
     }
     pushLog(`Usou [${skillName}] e rolou ${diceCount}d20: \n[ ${results.join(' | ')} ] \nSoma: ${total}`, 'system');
+}
+
+// === LÓGICA DOS PODERES DOS MIRACULOUS ===
+function rollMiraculousPower(miraculous) {
+    if(!currentTableId) return;
+    let name = miraculous.split(' ')[0].toUpperCase();
+    let msg = `💎 PODER MIRACULOUS: ${name} 💎\n`;
+
+    if(name === "GATO") {
+        let roll = Math.floor(Math.random() * 3) + 1; // 1d3
+        msg += `[Rolou 1d3]: ${roll}\n\n`;
+        if(roll === 3) msg += "⚠️ EFEITO: INSTAKILL no alvo!";
+        if(roll === 2) msg += "⚠️ EFEITO: Causa dano equivalente a METADE da vida do alvo.";
+        if(roll === 1) msg += "⚠️ EFEITO: Sofre um ferimento leve, mas causa um ferimento contínuo no inimigo.";
+    } 
+    else if(name === "JOANINHA") {
+        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
+        msg += `[Rolou 1d10]: ${roll}\n\n`;
+        msg += "🐞 EFEITO: Pode criar 3 coisas por turno (Atributos, Itens ou Recuperar algo perdido).";
+    }
+    else if(name === "ABELHA") {
+        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
+        msg += `[Rolou 1d10]: ${roll}\n\n`;
+        msg += `🐝 EFEITO: O alvo ficará paralisado por ${roll} minutos!`;
+    }
+    else if(name === "TARTARUGA") {
+        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
+        msg += `[Rolou 1d10]: ${roll}\n\n`;
+        msg += `🐢 EFEITO: Cria um escudo invulnerável por ${roll} minutos! (O portador fica imobilizado).`;
+    }
+    else if(name === "PAVÃO") {
+        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
+        msg += `[Rolou 1d10]: ${roll}\n\n`;
+        msg += `🦚 EFEITO: Criou um Amok! Você perde ${roll} pontos de SANIDADE enquanto durar o controle (reversível).`;
+    }
+    else if(name === "RATO") {
+        let multi = Math.floor(Math.random() * 10) + 1; // 1d10
+        let dano = Math.floor(Math.random() * 3) + 1; // 1d3
+        msg += `[Rolou 1d10 Multiplicador]: ${multi}\n[Rolou 1d3 Dano]: ${dano}\n\n`;
+        msg += `🐭 EFEITO: Multiplica o efeito por ${multi}x! O portador sofre a consequência nível ${dano} do esforço.`;
+    }
+    else {
+        // Regra geral para os outros
+        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
+        msg += `[Rolou 1d10]: ${roll}\n\n`;
+        msg += `✨ EFEITO: Poder ativado com magnitude ${roll}. Aguarde o Mestre narrar as consequências.`;
+    }
+
+    pushLog(msg, 'power');
 }
 
 function sendSessionMsg() {
@@ -664,6 +761,50 @@ function pushLog(txt, type = null, overrideName = null) {
     isNpc: overrideName !== null,
     ts: firebase.database.ServerValue.TIMESTAMP
   });
+}
+
+// ==========================================
+// BAÚ COLETIVO
+// ==========================================
+function openChest() {
+    if(!currentTableId) return;
+    document.getElementById('modal-chest').style.display = 'flex';
+}
+
+function loadChestData(id) {
+    db.ref(`tables/${id}/chest`).on('value', snap => {
+        const div = document.getElementById('chest-items-list');
+        div.innerHTML = "";
+        let hasItems = false;
+        snap.forEach(child => {
+            hasItems = true;
+            div.innerHTML += `
+            <div class="stat-row">
+                <span style="color:#fff;">${child.val().name} <small style="color:var(--text-sub); font-size:10px;">(por ${child.val().addedBy})</small></span>
+                <button onclick="removeChestItem('${child.key}', '${child.val().name}')" class="btn-small" style="background:var(--danger)">Retirar</button>
+            </div>`;
+        });
+        if(!hasItems) div.innerHTML = "<p style='font-size:12px; color:var(--text-sub); text-align:center;'>O baú está vazio.</p>";
+    });
+}
+
+function addChestItem() {
+    const itemName = document.getElementById('new-chest-item').value;
+    if(!itemName || !currentTableId) return;
+    
+    db.ref(`tables/${currentTableId}/chest`).push({
+        name: itemName,
+        addedBy: userData.char?.name || userData.name
+    });
+    
+    document.getElementById('new-chest-item').value = "";
+    pushLog(`Guardou um item no Baú Coletivo: [${itemName}]`, 'system');
+}
+
+function removeChestItem(key, itemName) {
+    if(!currentTableId) return;
+    db.ref(`tables/${currentTableId}/chest/${key}`).remove();
+    pushLog(`Retirou do Baú Coletivo: [${itemName}]`, 'system');
 }
 
 // ==========================================
@@ -726,7 +867,6 @@ function openGmInspect() {
     document.getElementById('gm-edit-uid').value = inspectingUid;
     document.getElementById('gm-edit-player-name').innerText = u.name;
     
-    // Status
     document.getElementById('gm-edit-hp').value = c.hp || 0;
     document.getElementById('gm-edit-maxhp').value = c.maxHp || 0;
     document.getElementById('gm-edit-san').value = c.sanity || 100;
@@ -735,7 +875,6 @@ function openGmInspect() {
     document.getElementById('gm-edit-calor').value = c.calor || 0;
     document.getElementById('gm-edit-miraculous').value = c.miraculous || "Nenhum";
     
-    // Habilidades
     const skDiv = document.getElementById('gm-skills-edit');
     skDiv.innerHTML = "";
     if(c.skills) {
@@ -770,7 +909,7 @@ function gmSavePlayer() {
     calor: parseInt(document.getElementById('gm-edit-calor').value),
     miraculous: document.getElementById('gm-edit-miraculous').value
   });
-
+  
   for(let i=0; i<2; i++) {
       let ptEl = document.getElementById(`gm-sk-pts-${i}`);
       let maxEl = document.getElementById(`gm-sk-max-${i}`);
