@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>Mestre RPG</title>
+<title>Miraculous RPG - Mestre</title>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
@@ -12,7 +12,7 @@
 <style>
 /* --- TEMA E VARIÁVEIS --- */
 :root {
-  --primary: #6200ea;
+  --primary: #d500f9;
   --primary-contrast: #ffffff;
   --bg-main: #050505;
   --bg-surface: #121212;
@@ -21,17 +21,17 @@
   --text-sub: #a0a0a0;
   --border: #333333;
   --input-bg: #252525;
-  --danger: #cf6679;
-  --success: #03dac6;
+  --danger: #ff1744;
+  --success: #00e676;
   --warn: #ffb74d;
   --boss: #b71c1c;
-  --fog: rgba(60, 60, 75, 0.85);
+  --fog: rgba(20, 20, 25, 0.85);
 }
 * { box-sizing: border-box; }
 body {
   margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center;
   background: var(--bg-main); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  user-select: none; overflow: hidden;
+  user-select: none; overflow: hidden; color: var(--text-main);
 }
 
 /* --- LAYOUT DO DISPOSITIVO --- */
@@ -45,7 +45,7 @@ body {
 }
 
 /* --- ESTRUTURA --- */
-.screen { width: 100%; height: 100%; background: var(--bg-surface); color: var(--text-main); display: flex; flex-direction: column; position: relative; }
+.screen { width: 100%; height: 100%; background: var(--bg-surface); display: flex; flex-direction: column; position: relative; }
 .header { height: 60px; display: flex; align-items: center; padding: 0 15px; background: var(--bg-card); border-bottom: 1px solid var(--border); font-weight: bold; font-size: 18px; flex-shrink: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 .content { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
 
@@ -74,7 +74,7 @@ button:active { filter: brightness(0.8); }
 .msg.me { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 2px; }
 .msg.other { align-self: flex-start; background: var(--bg-card); border: 1px solid var(--border); border-bottom-left-radius: 2px; }
 .msg.system { align-self: center; font-size: 11px; color: var(--text-sub); border: 1px dashed var(--border); background: transparent; width: 100%; text-align: center; }
-.msg.narrate { width: 100%; background: #1a237e; border: 1px solid #3949ab; text-align: center; font-style: italic; color: #fff; }
+.msg.narrate { width: 100%; background: #311b92; border: 1px solid #4527a0; text-align: center; font-style: italic; color: #fff; }
 .msg.npc { align-self: flex-start; background: #37474f; border: 1px solid #546e7a; color: #fff; border-bottom-left-radius: 2px;}
 
 /* --- NÉVOA & BOSS --- */
@@ -92,7 +92,7 @@ button:active { filter: brightness(0.8); }
 .hp-bar-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; margin-top: 5px; }
 .hp-bar-fill { height: 100%; background: #d32f2f; transition: width 0.3s; }
 .sanity-fill { background: #ab47bc; }
-.miraculous-tag { background: linear-gradient(45deg, #f06292, #ba68c8); color: #fff; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; }
+.miraculous-tag { background: linear-gradient(45deg, #d500f9, #6200ea); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; border: 1px solid #fff; }
 
 .skill-box { background: #252525; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; }
 .skill-box b { color: var(--primary); font-size: 14px;}
@@ -102,14 +102,11 @@ button:active { filter: brightness(0.8); }
 
 <div class="device">
   <div id="home" class="screen" style="padding: 20px;">
-    <h2 style="color:var(--primary); text-align: center; margin-bottom: 30px; font-size: 32px;">Mestre RPG<small style="font-size:12px; color:var(--text-sub)">v4.0</small></h2>
+    <h2 style="color:var(--primary); text-align: center; margin-bottom: 30px; font-size: 32px;">Miraculous RPG<small style="font-size:12px; color:var(--text-sub); display:block;">Mestre & Jogador</small></h2>
     <div class="app-grid">
       <div class="app-icon" onclick="go('profile')"><div class="icon-box" style="color:#42a5f5">👤</div><span>Perfil</span></div>
       <div class="app-icon" onclick="go('sessions')"><div class="icon-box" style="color:#ab47bc">🎲</div><span>Mesas</span></div>
-      <div class="app-icon" onclick="go('chats')"><div class="icon-box" style="color:#66bb6a">💬</div><span>Chats</span></div>
       <div class="app-icon" onclick="go('sheet')"><div class="icon-box" style="color:#ffa726">📜</div><span>Ficha</span></div>
-      <div class="app-icon" onclick="go('store')"><div class="icon-box" style="color:#8d6e63">🛒</div><span>Loja</span></div>
-      <div class="app-icon" onclick="go('bank')"><div class="icon-box" style="color:#fdd835">🏦</div><span>Banco</span></div>
     </div>
   </div>
 
@@ -118,18 +115,21 @@ button:active { filter: brightness(0.8); }
     <div class="content">
       <div id="view-login">
         <div class="card">
-          <h3>Bem-vindo</h3>
+          <h3>Entrar</h3>
           <input type="email" id="login-email" placeholder="E-mail">
           <input type="password" id="login-pass" placeholder="Senha">
           <button onclick="doLogin()">Entrar</button>
           <button onclick="doRegister()" style="background:transparent; border:1px solid var(--border); margin-top:5px;">Criar Conta</button>
+          <p style="font-size:11px; color:var(--warn); text-align:center; margin-top:10px;">Lembre-se de ativar "E-mail/Senha" no console do Firebase Authentication.</p>
         </div>
       </div>
       <div id="view-user" style="display:none">
         <div class="card" style="text-align:center">
-          <img id="u-img" src="" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 10px; border: 2px solid var(--primary);">
+          <img id="u-img" src="https://via.placeholder.com/80" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 10px; border: 2px solid var(--primary);">
           <h3 id="u-name" style="margin:5px 0; color:var(--primary)">Usuário</h3>
+          <p style="font-size:12px; color:var(--text-sub);">UID: <span id="u-uid"></span></p>
           <div style="margin-top:10px;">
+             <button onclick="becomeGM()" id="btn-become-gm" style="background:var(--warn); color:#000; margin-bottom:10px;">Tornar-se Mestre</button>
              <button onclick="auth.signOut()" style="background:var(--danger)">Sair</button>
           </div>
         </div>
@@ -161,7 +161,7 @@ button:active { filter: brightness(0.8); }
       
       <div id="boss-panel" class="boss-bar-container">
          <strong id="boss-name-display" style="color:var(--boss); font-size:16px;">BOSS</strong>
-         <div class="hp-bar-bg"><div id="boss-hp-fill" class="boss-hp-fill" style="width:100%"></div></div>
+         <div class="boss-hp-bg"><div id="boss-hp-fill" class="boss-hp-fill" style="width:100%"></div></div>
          <small id="boss-hp-txt">100/100</small>
       </div>
 
@@ -170,12 +170,10 @@ button:active { filter: brightness(0.8); }
            <small style="color:var(--primary); font-weight:bold;">SISTEMAS GM</small>
            <button onclick="toggleGmPanel()" style="width:auto; padding:2px 8px; font-size:10px; background:var(--danger)">X</button>
         </div>
-        
-        <input id="gm-npc-name" type="text" placeholder="Nome do NPC para Falar no Chat..." style="background:#000;">
+        <input id="gm-npc-name" type="text" placeholder="Nome do NPC (Se quiser narrar como alguém)" style="background:#000;">
         <select id="gm-target-select" style="margin-bottom:5px; background:#000;"></select>
-        
         <div class="gm-toolbar" style="margin-top:5px;">
-          <button onclick="openGmInspect()" style="background:#42a5f5;">🔍 Inspecionar Jogador</button>
+          <button onclick="openGmInspect()" style="background:#42a5f5;">🔍 Inspec. Jogador</button>
           <button onclick="toggleFog()" style="background:#78909c;">🌫️ Névoa</button>
           <button onclick="openBossControl()" style="background:var(--boss);">👹 Chefe</button>
         </div>
@@ -183,9 +181,12 @@ button:active { filter: brightness(0.8); }
 
       <div id="session-log" class="chat-list"></div>
       
-      <div class="chat-input" style="padding:10px; background:var(--bg-card); display:flex; gap:5px; z-index:4;">
-        <input id="session-msg" placeholder="Mensagem ou /ajuda..." style="margin:0;" onkeydown="if(event.key==='Enter') sendSessionMsg()">
-        <button onclick="sendSessionMsg()" style="width:50px; margin:0;">➤</button>
+      <div class="chat-input" style="padding:10px; background:var(--bg-card); z-index:4;">
+        <div id="player-roll-area" style="display:flex; gap:5px; margin-bottom:5px; overflow-x:auto;"></div>
+        <div style="display:flex; gap:5px;">
+            <input id="session-msg" placeholder="Mensagem ou /narrar (Apenas GM)..." style="margin:0;" onkeydown="if(event.key==='Enter') sendSessionMsg()">
+            <button onclick="sendSessionMsg()" style="width:50px; margin:0;">➤</button>
+        </div>
       </div>
     </div>
   </div>
@@ -205,7 +206,7 @@ button:active { filter: brightness(0.8); }
 
   <div id="modal-gm-inspect" class="modal" onclick="closeModal(event, 'modal-gm-inspect')">
     <div class="modal-content">
-      <h4>Inspecionar & Conceder</h4>
+      <h4>Inspecionar & Editar Jogador</h4>
       <input type="hidden" id="gm-edit-uid">
       <b id="gm-edit-player-name" style="color:var(--primary)">Jogador</b>
       
@@ -219,28 +220,28 @@ button:active { filter: brightness(0.8); }
       </div>
       
       <div style="margin-top:10px;">
-        <small>Conceder Joia (Miraculous)</small>
+        <small>Conceder Miraculous</small>
         <select id="gm-edit-miraculous">
             <option value="Nenhum">Nenhum</option>
-            <option value="Criação (Joaninha)">Criação (Joaninha)</option>
-            <option value="Destruição (Gato)">Destruição (Gato)</option>
-            <option value="Ilusão (Raposa)">Ilusão (Raposa)</option>
-            <option value="Proteção (Tartaruga)">Proteção (Tartaruga)</option>
-            <option value="Ação (Abelha)">Ação (Abelha)</option>
-            <option value="Transmissão (Borboleta)">Transmissão (Borboleta)</option>
-            <option value="Emoção (Pavão)">Emoção (Pavão)</option>
-            <option value="Multiplicação (Rato)">Multiplicação (Rato)</option>
-            <option value="Determinação (Touro)">Determinação (Touro)</option>
-            <option value="Exaltação (Tigre)">Exaltação (Tigre)</option>
-            <option value="Evolução (Coelho)">Evolução (Coelho)</option>
-            <option value="Perfeição (Dragão)">Perfeição (Dragão)</option>
-            <option value="Intuição (Cobra)">Intuição (Cobra)</option>
-            <option value="Migração (Cavalo)">Migração (Cavalo)</option>
-            <option value="Paixão (Cabra)">Paixão (Cabra)</option>
-            <option value="Derisão (Macaco)">Derisão (Macaco)</option>
-            <option value="Pretensão (Galo)">Pretensão (Galo)</option>
-            <option value="Adoração (Cão)">Adoração (Cão)</option>
-            <option value="Júbilo (Porco)">Júbilo (Porco)</option>
+            <option value="Joaninha (Criação)">Joaninha (Criação)</option>
+            <option value="Gato (Destruição)">Gato (Destruição)</option>
+            <option value="Borboleta (Transmissão)">Borboleta (Transmissão)</option>
+            <option value="Tartaruga (Proteção)">Tartaruga (Proteção)</option>
+            <option value="Raposa (Ilusão)">Raposa (Ilusão)</option>
+            <option value="Abelha (Ação)">Abelha (Ação)</option>
+            <option value="Pavão (Emoção)">Pavão (Emoção)</option>
+            <option value="Rato (Multiplicação)">Rato (Multiplicação)</option>
+            <option value="Touro (Determinação)">Touro (Determinação)</option>
+            <option value="Tigre (Exaltação)">Tigre (Exaltação)</option>
+            <option value="Coelho (Evolução)">Coelho (Evolução)</option>
+            <option value="Dragão (Perfeição)">Dragão (Perfeição)</option>
+            <option value="Cobra (Intuição)">Cobra (Intuição)</option>
+            <option value="Cavalo (Migração)">Cavalo (Migração)</option>
+            <option value="Cabra (Paixão)">Cabra (Paixão)</option>
+            <option value="Macaco (Derisão)">Macaco (Derisão)</option>
+            <option value="Galo (Pretensão)">Galo (Pretensão)</option>
+            <option value="Cão (Adoração)">Cão (Adoração)</option>
+            <option value="Porco (Júbilo)">Porco (Júbilo)</option>
         </select>
       </div>
 
@@ -249,7 +250,7 @@ button:active { filter: brightness(0.8); }
         <div id="gm-skills-edit"></div>
       </div>
 
-      <button onclick="gmSavePlayer()" style="background:var(--success); margin-top:15px;">Salvar Alterações</button>
+      <button onclick="gmSavePlayer()" style="background:var(--success); margin-top:15px; color:#000;">Salvar Alterações</button>
     </div>
   </div>
 
@@ -258,7 +259,7 @@ button:active { filter: brightness(0.8); }
     <div class="content">
       <div class="card">
         <div style="display:flex; gap:15px; align-items:center;">
-           <img id="char-img-display" src="" style="width:60px; height:60px; border-radius:10px; background:#333; object-fit:cover;">
+           <img id="char-img-display" src="https://via.placeholder.com/60" style="width:60px; height:60px; border-radius:10px; background:#333; object-fit:cover;">
            <div style="flex:1;">
              <h3 id="char-name-display" style="margin:0;">Sem Nome</h3>
              <small style="color:var(--text-sub)">Raça: Humana</small>
@@ -290,48 +291,40 @@ button:active { filter: brightness(0.8); }
         <h4>Lore & Trauma</h4>
         <div class="stat-row" style="flex-direction:column; align-items:flex-start;">
             <span style="color:var(--primary); font-size:11px;">HISTÓRIA</span>
-            <span id="lore-display" style="font-size:13px; color:var(--text-sub); margin-top:5px;">Vazio</span>
+            <span id="lore-display" style="font-size:13px; color:var(--text-sub); margin-top:5px; white-space:pre-wrap;">Vazio</span>
         </div>
         <div class="stat-row" style="flex-direction:column; align-items:flex-start; margin-top:10px;">
             <span style="color:var(--danger); font-size:11px;">DESVANTAGENS (TRAUMAS/MEDOS)</span>
-            <span id="flaws-display" style="font-size:13px; color:var(--text-sub); margin-top:5px;">Nenhum</span>
+            <span id="flaws-display" style="font-size:13px; color:var(--text-sub); margin-top:5px; white-space:pre-wrap;">Nenhum</span>
         </div>
       </div>
 
-      <div class="card">
-        <h4>Inventário / Itens</h4>
-        <pre id="inv-display" style="white-space:pre-wrap; font-family:inherit; color:var(--text-sub); margin:0;">Vazio</pre>
-      </div>
-
-      <button onclick="openEditSheet()">Editar Ficha</button>
+      <button onclick="openEditSheet()">Editar Ficha (Nome/Lore)</button>
     </div>
   </div>
 
   <div id="modal-sheet-edit" class="modal" onclick="closeModal(event, 'modal-sheet-edit')">
     <div class="modal-content">
       <h4>Editar Ficha</h4>
-      <input id="p-char-name" placeholder="Nome">
-      <input id="p-char-img" placeholder="URL Imagem">
+      <input id="p-char-name" placeholder="Nome do Personagem">
       <textarea id="p-char-lore" placeholder="Sua História (Lore)" rows="3"></textarea>
       <textarea id="p-char-flaws" placeholder="Traumas e Medos" rows="2"></textarea>
       
-      <h5 style="margin: 10px 0 5px;">Habilidade 1</h5>
+      <h5 style="margin: 10px 0 5px;">Habilidades (Mestre edita os pontos)</h5>
       <input id="p-skill1-name" placeholder="Nome da Habilidade 1">
-      <h5 style="margin: 10px 0 5px;">Habilidade 2</h5>
       <input id="p-skill2-name" placeholder="Nome da Habilidade 2">
       
-      <small style="color:var(--warn); display:block; margin:10px 0;">O Mestre define o tipo (10 ou 20 pts) e seus pontos, HP, Sanidade e Status de Sobrevivência.</small>
-      <button onclick="saveSheetPlayer()">Salvar</button>
+      <small style="color:var(--warn); display:block; margin:10px 0;">HP, Sanidade e Pontos de Habilidade são controlados pelo Mestre.</small>
+      <button onclick="saveSheetPlayer()">Salvar Alterações</button>
     </div>
   </div>
 
-  <div id="chats" class="page"><div class="header"><button class="back-btn" onclick="back('chats')">‹</button> Chats</div><div class="content"><div class="card" onclick="alert('Use o chat da Mesa logando em uma campanha.')">Vá em Mesas</div></div></div>
-  <div id="store" class="page"><div class="header"><button class="back-btn" onclick="back('store')">‹</button> Loja</div><div class="content"><p>Loja em manutenção pelo Mestre.</p></div></div>
-  <div id="bank" class="page"><div class="header"><button class="back-btn" onclick="back('bank')">‹</button> Banco</div><div class="content"><p>Em breve.</p></div></div>
 </div>
 
 <script>
-// --- CONFIG FIREBASE ---
+// ==========================================
+// CONFIG FIREBASE
+// ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBykDF5TNKQHejUJTp-ue7s5CKfpJp1HV0",
   authDomain: "mestre-471a0.firebaseapp.com",
@@ -345,30 +338,38 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const auth = firebase.auth();
 
-// --- ESTADO GLOBAL ---
+// ==========================================
+// ESTADO GLOBAL
+// ==========================================
 let currentUser = null;
-let userData = {};
+let userData = null;
 let currentTableId = null;
 let currentTableData = null;
 
+// ==========================================
+// INICIALIZAÇÃO E AUTH
+// ==========================================
 function init() {
-  auth.onAuthStateChanged(u => {
-    currentUser = u;
-    if (u) {
+  auth.onAuthStateChanged(user => {
+    currentUser = user;
+    if (user) {
       document.getElementById('view-login').style.display = 'none';
       document.getElementById('view-user').style.display = 'block';
+      document.getElementById('u-uid').innerText = user.uid;
       loadUserProfile();
       loadTables();
     } else {
       document.getElementById('view-login').style.display = 'block';
       document.getElementById('view-user').style.display = 'none';
+      userData = null;
     }
   });
 }
 
 async function doLogin() {
-  try { await auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-pass').value); } 
-  catch(e) { alert("Erro: " + e.message); }
+  try { 
+    await auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-pass').value); 
+  } catch(e) { alert("Erro ao entrar: " + e.message); }
 }
 
 async function doRegister() {
@@ -377,36 +378,48 @@ async function doRegister() {
     const pass = document.getElementById('login-pass').value;
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
     
+    // Schema Inicial
     await db.ref('users/' + cred.user.uid).set({
-      name: "Player " + cred.user.uid.substring(0,4),
+      name: "Humano " + cred.user.uid.substring(0,4),
+      isGM: false,
       char: {
         name: "Sem Nome", img: "", race: "Humana",
         hp: 20, maxHp: 20, sanity: 100,
         fome: 0, sede: 0, calor: 0,
-        lore: "", flaws: "", miraculous: "Nenhum", inv: "Roupas Básicas",
+        lore: "", flaws: "", miraculous: "Nenhum",
         skills: [
             { name: "Habilidade 1", points: 0, maxType: 10 },
             { name: "Habilidade 2", points: 0, maxType: 20 }
         ]
       }
     });
-  } catch(e) { alert("Erro: " + e.message); }
+    alert("Conta criada com sucesso!");
+  } catch(e) { alert("Erro ao criar conta: " + e.message); }
 }
 
+function becomeGM() {
+    if(!currentUser) return;
+    db.ref(`users/${currentUser.uid}/isGM`).set(true).then(() => alert("Você agora é um Mestre!"));
+}
+
+// ==========================================
+// PERFIL E FICHA DO JOGADOR
+// ==========================================
 function loadUserProfile() {
-  db.ref('users/' + currentUser.uid).on('value', s => {
-    userData = s.val() || {};
-    document.getElementById('u-name').innerText = userData.name;
-    if(userData.img) document.getElementById('u-img').src = userData.img;
+  if(!currentUser) return;
+  db.ref('users/' + currentUser.uid).on('value', snap => {
+    userData = snap.val() || {};
+    
+    document.getElementById('u-name').innerText = userData.name || "Sem Nome";
+    document.getElementById('btn-become-gm').style.display = userData.isGM ? 'none' : 'block';
     
     const c = userData.char || {};
     document.getElementById('char-name-display').innerText = c.name || "Sem nome";
-    document.getElementById('char-img-display').src = c.img || "";
     
-    // Status
-    document.getElementById('hp-text').innerText = `${c.hp}/${c.maxHp}`;
+    // Status Sobrevivência
+    document.getElementById('hp-text').innerText = `${c.hp || 0}/${c.maxHp || 1}`;
     document.getElementById('hp-bar').style.width = Math.min(100, Math.max(0, ((c.hp||0)/(c.maxHp||1))*100)) + "%";
-    document.getElementById('san-text').innerText = `${c.sanity}/100`;
+    document.getElementById('san-text').innerText = `${c.sanity || 0}/100`;
     document.getElementById('san-bar').style.width = Math.min(100, Math.max(0, c.sanity||0)) + "%";
     
     document.getElementById('fome-txt').innerText = (c.fome||0) + "%";
@@ -416,7 +429,6 @@ function loadUserProfile() {
     // Textos
     document.getElementById('lore-display').innerText = c.lore || "Sua história...";
     document.getElementById('flaws-display').innerText = c.flaws || "Sem traumas definidos.";
-    document.getElementById('inv-display').innerText = c.inv || "Vazio";
 
     // Miraculous
     const mirDiv = document.getElementById('char-miraculous-display');
@@ -426,21 +438,24 @@ function loadUserProfile() {
         mirDiv.innerHTML = "";
     }
 
-    // Skills render
+    // Skills Renderização
     renderSkills(c.skills);
 
-    // Prefill Modal
+    // Preencher Modal de Edição
     document.getElementById('p-char-name').value = c.name || "";
-    document.getElementById('p-char-img').value = c.img || "";
     document.getElementById('p-char-lore').value = c.lore || "";
     document.getElementById('p-char-flaws').value = c.flaws || "";
     if(c.skills && c.skills.length > 0) {
         document.getElementById('p-skill1-name').value = c.skills[0].name || "";
         document.getElementById('p-skill2-name').value = c.skills[1]?.name || "";
     }
+
+    // Gerar botões de rolar no chat
+    renderRollButtonsChat(c.skills);
   });
 }
 
+// Lógica de Rolagem Exata Conforme as Regras
 function calculateSkillLogic(pts, maxType) {
     let rank = "Iniciante";
     let dice = 1;
@@ -448,11 +463,11 @@ function calculateSkillLogic(pts, maxType) {
     maxType = parseInt(maxType) || 10;
 
     if (maxType === 10) {
-        if (pts >= 10) { rank = "Expert"; dice = 4 + (pts - 10); }
-        else if (pts >= 5) { rank = "Intermediário"; dice = 2; }
+        if (pts >= 10) { rank = "Expert"; dice = 4 + (pts - 10); } // 10=4d20, 11=5d20...
+        else if (pts >= 5) { rank = "Intermediário"; dice = 2; } // 5 a 9 = intermediário
     } else if (maxType === 20) {
-        if (pts >= 15) { rank = "Expert"; dice = 4 + (pts - 15); }
-        else if (pts > 5) { rank = "Intermediário"; dice = 2; }
+        if (pts >= 15) { rank = "Expert"; dice = 4 + (pts - 15); } // ultimos 5 = expert (15=4d20...)
+        else if (pts >= 5) { rank = "Intermediário"; dice = 2; } // primeiros 10 depois do 5 = intermediário
     }
     return { rank, dice };
 }
@@ -462,7 +477,7 @@ function renderSkills(skills) {
     list.innerHTML = "";
     if(!skills || skills.length === 0) return;
 
-    skills.forEach((sk, idx) => {
+    skills.forEach(sk => {
         if(!sk.name) return;
         const calc = calculateSkillLogic(sk.points, sk.maxType);
         
@@ -470,17 +485,39 @@ function renderSkills(skills) {
         <div class="skill-box">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <b>${sk.name}</b>
-                <button onclick="rollSkill('${sk.name}', ${calc.dice})" style="width:auto; padding:5px 10px; font-size:11px;">Rolar ${calc.dice}d20</button>
             </div>
             <div style="margin-top:5px; color:var(--text-sub); display:flex; justify-content:space-between;">
-                <span>Nível: <span style="color:#fff">${calc.rank}</span></span>
+                <span>Nível: <span style="color:#fff">${calc.rank} (${calc.dice}d20)</span></span>
                 <span>${sk.points}/${sk.maxType} pts</span>
             </div>
         </div>`;
     });
 }
 
-// --- MESAS E CHAT ---
+function openEditSheet() { document.getElementById('modal-sheet-edit').style.display = 'flex'; }
+
+function saveSheetPlayer() {
+  if(!currentUser) return alert("Erro de Autenticação. Faça login novamente.");
+  
+  const s1 = document.getElementById('p-skill1-name').value;
+  const s2 = document.getElementById('p-skill2-name').value;
+
+  // Atualiza usando merge seguro
+  db.ref(`users/${currentUser.uid}/char`).update({
+    name: document.getElementById('p-char-name').value,
+    lore: document.getElementById('p-char-lore').value,
+    flaws: document.getElementById('p-char-flaws').value
+  });
+  
+  db.ref(`users/${currentUser.uid}/char/skills/0/name`).set(s1);
+  db.ref(`users/${currentUser.uid}/char/skills/1/name`).set(s2);
+
+  closeModal(null, 'modal-sheet-edit');
+}
+
+// ==========================================
+// MESAS E CHAT
+// ==========================================
 function createTable() {
   const name = document.getElementById('new-table-name').value;
   if (!name) return;
@@ -492,23 +529,32 @@ function createTable() {
 }
 
 function loadTables() {
-  db.ref('tables').on('value', s => {
+  db.ref('tables').on('value', snap => {
     const div = document.getElementById('tables-list');
     div.innerHTML = "";
-    s.forEach(child => {
-      div.innerHTML += `<div class="card" style="cursor:pointer;" onclick="joinTable('${child.key}')"><b>${child.val().name}</b></div>`;
+    snap.forEach(child => {
+      div.innerHTML += `<div class="card" style="cursor:pointer; border-left:4px solid var(--primary);" onclick="joinTable('${child.key}')"><b>🎲 ${child.val().name}</b></div>`;
     });
   });
 }
 
 function joinTable(id) {
   currentTableId = id;
-  db.ref(`tables/${id}`).on('value', s => {
-    currentTableData = s.val();
+  
+  // Registra o membro na mesa
+  db.ref(`tables/${id}/members/${currentUser.uid}`).update({
+      name: userData.name || "Jogador",
+      role: userData.isGM ? 'GM' : 'PLAYER'
+  });
+
+  db.ref(`tables/${id}`).on('value', snap => {
+    currentTableData = snap.val();
+    if(!currentTableData) return;
+    
     document.getElementById('session-title').innerText = currentTableData.name;
     
     // Controle de GM
-    if (currentTableData.master === currentUser.uid) {
+    if (userData.isGM) {
       document.getElementById('gm-tools-btn').style.display = 'block';
       loadGmControls();
     } else {
@@ -516,10 +562,9 @@ function joinTable(id) {
       document.getElementById('gm-panel').style.display = 'none';
     }
 
-    // Névoa
+    // Sincronizar Névoa e Boss
     document.getElementById('fog-layer').style.display = currentTableData.fog ? 'block' : 'none';
 
-    // Boss
     const boss = currentTableData.boss || {};
     if(boss.active) {
         document.getElementById('boss-panel').style.display = 'block';
@@ -536,8 +581,10 @@ function joinTable(id) {
 }
 
 function leaveTable() {
-  db.ref(`tables/${currentTableId}/log`).off();
-  db.ref(`tables/${currentTableId}`).off();
+  if(currentTableId) {
+      db.ref(`tables/${currentTableId}/log`).off();
+      db.ref(`tables/${currentTableId}`).off();
+  }
   currentTableId = null;
   back('active-session');
 }
@@ -545,10 +592,9 @@ function leaveTable() {
 function loadTableChat(id) {
   const div = document.getElementById('session-log');
   div.innerHTML = "";
-  // Evitar listeners duplicados se sair e voltar
   db.ref(`tables/${id}/log`).off(); 
-  db.ref(`tables/${id}/log`).limitToLast(50).on('child_added', s => {
-    const m = s.val();
+  db.ref(`tables/${id}/log`).limitToLast(50).on('child_added', snap => {
+    const m = snap.val();
     let cls = (m.uid === currentUser.uid && !m.isNpc) ? 'me' : 'other';
     if (m.type === 'system') cls = 'system';
     if (m.type === 'narrate') cls = 'narrate';
@@ -567,35 +613,23 @@ function loadTableChat(id) {
   });
 }
 
-function sendSessionMsg() {
-  const txt = document.getElementById('session-msg').value;
-  if (!txt || !currentTableId) return;
-  
-  // GM NPC check
-  const npcName = document.getElementById('gm-npc-name') ? document.getElementById('gm-npc-name').value : "";
-  const isGm = currentTableData.master === currentUser.uid;
-
-  if (txt.startsWith('/narrar ') && isGm) {
-    pushLog(txt.replace('/narrar ', ''), 'narrate');
-  } else {
-    pushLog(txt, null, (isGm && npcName !== "") ? npcName : null);
-  }
-  document.getElementById('session-msg').value = "";
+function renderRollButtonsChat(skills) {
+    const area = document.getElementById('player-roll-area');
+    area.innerHTML = "";
+    if(!skills) return;
+    skills.forEach(sk => {
+        if(!sk.name) return;
+        const calc = calculateSkillLogic(sk.points, sk.maxType);
+        const btn = document.createElement('button');
+        btn.innerText = `🎲 ${sk.name} (${calc.dice}d20)`;
+        btn.style = "font-size:11px; padding:6px; white-space:nowrap; background:#444;";
+        btn.onclick = () => rollDiceInChat(sk.name, calc.dice);
+        area.appendChild(btn);
+    });
 }
 
-function pushLog(txt, type = null, overrideName = null) {
-  db.ref(`tables/${currentTableId}/log`).push({
-    u: overrideName ? overrideName : userData.name,
-    uid: currentUser.uid,
-    txt: txt,
-    type: type,
-    isNpc: overrideName !== null,
-    ts: firebase.database.ServerValue.TIMESTAMP
-  });
-}
-
-function rollSkill(skillName, diceCount) {
-    if(!currentTableId) return alert("Entre em uma mesa para rolar.");
+function rollDiceInChat(skillName, diceCount) {
+    if(!currentTableId) return alert("Você precisa estar em uma mesa para rolar.");
     let results = [];
     let total = 0;
     for(let i=0; i<diceCount; i++) {
@@ -606,15 +640,41 @@ function rollSkill(skillName, diceCount) {
     pushLog(`Usou [${skillName}] e rolou ${diceCount}d20: \n[ ${results.join(' | ')} ] \nSoma: ${total}`, 'system');
 }
 
-// --- GM TOOLS ---
+function sendSessionMsg() {
+  const txt = document.getElementById('session-msg').value;
+  if (!txt || !currentTableId) return;
+  
+  const npcName = document.getElementById('gm-npc-name') ? document.getElementById('gm-npc-name').value : "";
+
+  if (txt.startsWith('/narrar ') && userData.isGM) {
+    pushLog(txt.replace('/narrar ', ''), 'narrate');
+  } else {
+    pushLog(txt, null, (userData.isGM && npcName !== "") ? npcName : null);
+  }
+  document.getElementById('session-msg').value = "";
+}
+
+function pushLog(txt, type = null, overrideName = null) {
+  if(!currentUser) return;
+  db.ref(`tables/${currentTableId}/log`).push({
+    u: overrideName ? overrideName : (userData.char?.name || userData.name),
+    uid: currentUser.uid,
+    txt: txt,
+    type: type,
+    isNpc: overrideName !== null,
+    ts: firebase.database.ServerValue.TIMESTAMP
+  });
+}
+
+// ==========================================
+// CONTROLES DO MESTRE (GM)
+// ==========================================
 function loadGmControls() {
-  db.ref(`tables/${currentTableId}/members`).on('value', s => {
+  db.ref(`tables/${currentTableId}/members`).on('value', snap => {
     const sel = document.getElementById('gm-target-select');
     sel.innerHTML = "";
-    s.forEach(c => {
-      if (c.key !== currentUser.uid) {
-        sel.innerHTML += `<option value="${c.key}">${c.val().name}</option>`;
-      }
+    snap.forEach(c => {
+      sel.innerHTML += `<option value="${c.key}">${c.val().name}</option>`;
     });
   });
 }
@@ -625,12 +685,13 @@ function toggleGmPanel() {
 }
 
 function toggleFog() {
+    if(!currentTableData) return;
     db.ref(`tables/${currentTableId}/fog`).set(!currentTableData.fog);
 }
 
 function openBossControl() {
     document.getElementById('modal-boss').style.display = 'flex';
-    if(currentTableData.boss) {
+    if(currentTableData && currentTableData.boss) {
         document.getElementById('boss-edit-name').value = currentTableData.boss.name || "";
         document.getElementById('boss-edit-hp').value = currentTableData.boss.hp || "";
         document.getElementById('boss-edit-maxhp').value = currentTableData.boss.maxHp || "";
@@ -645,7 +706,7 @@ function saveBoss() {
         maxHp: parseInt(document.getElementById('boss-edit-maxhp').value)
     });
     closeModal(null, 'modal-boss');
-    pushLog("O ambiente escurece. Uma presença hostil se aproxima...", "narrate");
+    pushLog("O ambiente escurece. Uma presença hostil e poderosa se aproxima...", "narrate");
 }
 
 function clearBoss() {
@@ -653,16 +714,19 @@ function clearBoss() {
     closeModal(null, 'modal-boss');
 }
 
-let inspectingUid = null;
 function openGmInspect() {
-  inspectingUid = document.getElementById('gm-target-select').value;
-  if (!inspectingUid) return alert("Selecione um jogador");
+  const inspectingUid = document.getElementById('gm-target-select').value;
+  if (!inspectingUid) return alert("Selecione um jogador na lista.");
   
-  db.ref(`users/${inspectingUid}`).once('value', s => {
-    const u = s.val();
+  db.ref(`users/${inspectingUid}`).once('value', snap => {
+    const u = snap.val();
+    if(!u || !u.char) return alert("Ficha do jogador não encontrada.");
+    
     const c = u.char;
     document.getElementById('gm-edit-uid').value = inspectingUid;
     document.getElementById('gm-edit-player-name').innerText = u.name;
+    
+    // Status
     document.getElementById('gm-edit-hp').value = c.hp || 0;
     document.getElementById('gm-edit-maxhp').value = c.maxHp || 0;
     document.getElementById('gm-edit-san').value = c.sanity || 100;
@@ -671,33 +735,32 @@ function openGmInspect() {
     document.getElementById('gm-edit-calor').value = c.calor || 0;
     document.getElementById('gm-edit-miraculous').value = c.miraculous || "Nenhum";
     
-    // Skills edit
+    // Habilidades
     const skDiv = document.getElementById('gm-skills-edit');
     skDiv.innerHTML = "";
     if(c.skills) {
         c.skills.forEach((sk, idx) => {
             skDiv.innerHTML += `
-            <div style="border:1px solid #333; padding:5px; margin-bottom:5px;">
+            <div style="border:1px solid #333; padding:5px; margin-bottom:5px; border-radius:5px;">
                 <b>${sk.name || 'Habilidade '+(idx+1)}</b><br>
                 <div style="display:flex; gap:5px; margin-top:5px;">
-                    <input id="gm-sk-pts-${idx}" type="number" placeholder="Pontos" value="${sk.points}">
+                    <input id="gm-sk-pts-${idx}" type="number" placeholder="Pontos Atuais" value="${sk.points}">
                     <select id="gm-sk-max-${idx}">
-                        <option value="10" ${sk.maxType===10?'selected':''}>Máx 10 Pts</option>
-                        <option value="20" ${sk.maxType===20?'selected':''}>Máx 20 Pts</option>
+                        <option value="10" ${sk.maxType===10?'selected':''}>Máximo 10 Pts</option>
+                        <option value="20" ${sk.maxType===20?'selected':''}>Máximo 20 Pts</option>
                     </select>
                 </div>
             </div>`;
         });
     }
-
     document.getElementById('modal-gm-inspect').style.display = 'flex';
   });
 }
 
 function gmSavePlayer() {
   const uid = document.getElementById('gm-edit-uid').value;
+  if(!uid) return;
   
-  // Update base stats
   db.ref(`users/${uid}/char`).update({
     hp: parseInt(document.getElementById('gm-edit-hp').value),
     maxHp: parseInt(document.getElementById('gm-edit-maxhp').value),
@@ -708,7 +771,6 @@ function gmSavePlayer() {
     miraculous: document.getElementById('gm-edit-miraculous').value
   });
 
-  // Update skills
   for(let i=0; i<2; i++) {
       let ptEl = document.getElementById(`gm-sk-pts-${i}`);
       let maxEl = document.getElementById(`gm-sk-max-${i}`);
@@ -721,35 +783,16 @@ function gmSavePlayer() {
   }
 
   closeModal(null, 'modal-gm-inspect');
-  pushLog(`GM alterou a ficha de um portador.`, "system");
+  pushLog(`O Mestre alterou misteriosamente as propriedades de um portador.`, "system");
 }
 
-function openEditSheet() { 
-  document.getElementById('modal-sheet-edit').style.display = 'flex'; 
-}
-
-function saveSheetPlayer() {
-  const s1 = document.getElementById('p-skill1-name').value;
-  const s2 = document.getElementById('p-skill2-name').value;
-
-  db.ref(`users/${currentUser.uid}/char`).update({
-    name: document.getElementById('p-char-name').value,
-    img: document.getElementById('p-char-img').value,
-    lore: document.getElementById('p-char-lore').value,
-    flaws: document.getElementById('p-char-flaws').value
-  });
-  
-  db.ref(`users/${currentUser.uid}/char/skills/0/name`).set(s1);
-  db.ref(`users/${currentUser.uid}/char/skills/1/name`).set(s2);
-
-  closeModal(null, 'modal-sheet-edit');
-}
-
+// ==========================================
+// UTILITÁRIOS
+// ==========================================
 function closeModal(e, id) {
   if (e && e.target.id !== id) return;
   document.getElementById(id).style.display = 'none';
 }
-
 function go(id) { document.getElementById(id).classList.add('active'); }
 function back(id) { document.getElementById(id).classList.remove('active'); }
 </script>
