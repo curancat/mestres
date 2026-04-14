@@ -3,361 +3,313 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>Miraculous RPG - Mestre & Jogador</title>
+<title>Miraculous RPG - Sessão Global</title>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
 <style>
-/* --- TEMA E VARIÁVEIS --- */
+/* --- TEMA CYBER-MYSTIC & GLASSMORPHISM --- */
 :root {
-  --primary: #d500f9;
-  --primary-contrast: #ffffff;
-  --bg-main: #050505;
-  --bg-surface: #121212;
-  --bg-card: #1e1e1e;
-  --text-main: #e0e0e0;
-  --text-sub: #a0a0a0;
-  --border: #333333;
-  --input-bg: #252525;
-  --danger: #ff1744;
-  --success: #00e676;
-  --warn: #ffb74d;
-  --boss: #b71c1c;
-  --fog: rgba(20, 20, 25, 0.85);
+    --bg-dark: #09090b;
+    --glass-bg: rgba(24, 24, 27, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --accent: #d500f9;
+    --accent-glow: rgba(213, 0, 249, 0.4);
+    --text-main: #f4f4f5;
+    --text-muted: #a1a1aa;
+    --danger: #ef4444;
+    --success: #10b981;
+    --warn: #f59e0b;
+    --boss: #b91c1c;
+    --nav-height: 65px;
 }
-* { box-sizing: border-box; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+
 body {
-  margin: 0; height: 100vh;
-  display: flex; justify-content: center; align-items: center;
-  background: var(--bg-main); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  user-select: none; overflow: hidden;
-  color: var(--text-main);
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    height: 100vh; width: 100vw;
+    overflow: hidden;
+    display: flex; flex-direction: column;
 }
 
-/* --- LAYOUT DO DISPOSITIVO MOBILE --- */
-.device {
-  width: 100%; max-width: 420px; height: 100%; max-height: 880px;
-  background: var(--bg-main); position: relative; 
-  display: flex; flex-direction: column; overflow: hidden;
-}
-@media (min-width: 450px) {
-  .device { height: 85vh; border-radius: 30px; box-shadow: 0 0 0 10px #1a1a1a, 0 0 30px rgba(0,0,0,0.8); }
+/* Fundo Estilizado */
+body::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at center, rgba(30,10,50,0.3) 0%, var(--bg-dark) 60%);
+    z-index: -1; pointer-events: none;
 }
 
-/* --- ESTRUTURA --- */
-.screen { width: 100%; height: 100%; background: var(--bg-surface); display: flex; flex-direction: column; position: relative; }
-.header { height: 60px; display: flex; align-items: center; justify-content: space-between;
-  padding: 0 15px; background: var(--bg-card); border-bottom: 1px solid var(--border); font-weight: bold; font-size: 16px; flex-shrink: 0; z-index: 10;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2); gap: 10px; }
-.content { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
+/* --- COMPONENTES GERAIS --- */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px; padding: 15px;
+}
 
-/* --- PÁGINAS --- */
-.page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-surface); display: flex;
-  flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 20; }
-.page.active { transform: translateX(0); }
+input, textarea, select {
+    width: 100%; padding: 12px; margin-bottom: 12px;
+    background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border);
+    color: var(--text-main); border-radius: 10px; outline: none; font-size: 14px;
+    transition: all 0.3s ease;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
 
-/* --- COMPONENTES --- */
-.card { background: var(--bg-card); border-radius: 12px; padding: 15px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-.app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; }
-.app-icon { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: 0.2s; }
-.app-icon:active { transform: scale(0.9); }
-.icon-box { width: 60px; height: 60px; background: var(--bg-card); border-radius: 18px; display: flex; justify-content: center; align-items: center; font-size: 28px; border: 1px solid var(--border); }
+button {
+    width: 100%; padding: 12px; border: none; border-radius: 10px;
+    background: linear-gradient(135deg, #b000cc, var(--accent));
+    color: white; font-weight: bold; font-size: 14px; cursor: pointer;
+    box-shadow: 0 4px 15px var(--accent-glow); transition: 0.2s;
+}
+button:active { transform: scale(0.97); }
+button.secondary { background: transparent; border: 1px solid var(--glass-border); box-shadow: none; color: var(--text-main); }
+button.danger { background: var(--danger); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
 
-/* --- FORMULÁRIOS --- */
-input, textarea, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px;
-  color: var(--text-main); margin-bottom: 10px; outline: none; font-size: 14px; }
-input:focus { border-color: var(--primary); }
-button { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; background: var(--primary); color: var(--primary-contrast); cursor: pointer; transition: 0.2s; font-size: 14px; }
-button:active { filter: brightness(0.8); }
-.btn-small { width: auto; padding: 6px 12px; font-size: 12px; }
-.back-btn { width: auto; background: transparent; color: var(--primary); font-size: 24px; padding: 0 10px 0 0; margin: 0; }
+/* --- NAVEGAÇÃO INFERIOR --- */
+.bottom-nav {
+    height: var(--nav-height); background: rgba(10, 10, 12, 0.9);
+    backdrop-filter: blur(15px); border-top: 1px solid var(--glass-border);
+    display: flex; justify-content: space-around; align-items: center;
+    position: fixed; bottom: 0; width: 100%; z-index: 100;
+}
+.nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--text-muted); font-size: 10px; cursor: pointer; transition: 0.3s;
+}
+.nav-item.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); transform: translateY(-2px); }
+.nav-icon { font-size: 22px; margin-bottom: 2px; }
 
-/* --- CHAT E SESSÃO --- */
-.chat-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-.chat-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 2; }
-.msg { max-width: 85%; padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; position: relative; word-wrap: break-word; }
-.msg.me { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 2px; }
-.msg.other { align-self: flex-start; background: var(--bg-card); border: 1px solid var(--border); border-bottom-left-radius: 2px; }
-.msg.system { align-self: center; font-size: 11px; color: var(--text-sub); border: 1px dashed var(--border); background: transparent; width: 100%; text-align: center; }
-.msg.narrate { width: 100%; background: #311b92; border: 1px solid #4527a0; text-align: center; font-style: italic; color: #fff; }
-.msg.npc { align-self: flex-start; background: #37474f; border: 1px solid #546e7a; color: #fff; border-bottom-left-radius: 2px;}
-.msg.power { align-self: center; background: linear-gradient(45deg, #2a0845, #6441A5); border: 1px solid #d500f9; color: #fff; font-weight: bold; width: 95%; text-align: center; box-shadow: 0 0 10px rgba(213,0,249,0.3); }
+/* --- ABAS (VIEWS) --- */
+.view {
+    display: none; flex-direction: column; height: calc(100vh - var(--nav-height));
+    overflow-y: auto; padding: 20px; animation: fadeIn 0.3s ease;
+}
+.view.active { display: flex; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- NÉVOA & BOSS --- */
-.fog-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--fog); z-index: 1; pointer-events: none; display: none; backdrop-filter: blur(2px); }
-.boss-bar-container { background: var(--bg-card); border-bottom: 2px solid var(--boss); padding: 10px; text-align: center; display: none; z-index: 3; }
-.boss-hp-bg { width: 100%; height: 10px; background: #333; border-radius: 5px; overflow: hidden; margin-top: 5px; }
-.boss-hp-fill { height: 100%; background: var(--boss); transition: width 0.3s; }
+/* --- CHAT VIEW --- */
+#view-chat { padding: 0; position: relative; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; z-index: 2; }
+.chat-input-area {
+    background: var(--glass-bg); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--glass-border); padding: 10px 15px;
+    display: flex; flex-direction: column; gap: 8px; z-index: 5;
+}
+.roll-buttons-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+.roll-buttons-row button { flex: 0 0 auto; width: auto; padding: 6px 12px; font-size: 12px; border-radius: 20px; box-shadow: none; }
 
-/* --- MODAL E BARRAS --- */
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
-.modal-content { background: var(--bg-surface); width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
-.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.gm-toolbar { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 5px; }
-.hp-bar-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; margin-top: 5px; }
-.hp-bar-fill { height: 100%; background: #d32f2f; transition: width 0.3s; }
-.sanity-fill { background: #ab47bc; }
-.miraculous-tag { background: linear-gradient(45deg, #d500f9, #6200ea); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; display: inline-block; border: 1px solid #fff; }
-.skill-box { background: #252525; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; }
-.skill-box b { color: var(--primary); font-size: 14px;}
+/* Estilos de Mensagem */
+.msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 13.5px; line-height: 1.4; word-wrap: break-word; position: relative; }
+.msg-header { font-size: 11px; font-weight: bold; margin-bottom: 3px; opacity: 0.8; }
+.msg.me { align-self: flex-end; background: linear-gradient(135deg, var(--accent), #7e00b8); color: white; border-bottom-right-radius: 4px; box-shadow: 0 2px 10px var(--accent-glow); }
+.msg.other { align-self: flex-start; background: rgba(40,40,45,0.8); border: 1px solid var(--glass-border); border-bottom-left-radius: 4px; }
+.msg.system { align-self: center; font-size: 12px; color: var(--warn); background: transparent; border: 1px dashed rgba(245, 158, 11, 0.3); text-align: center; width: 90%; }
+.msg.narrate { align-self: center; width: 100%; background: rgba(49, 27, 146, 0.6); border-left: 4px solid #b388ff; font-style: italic; color: #fff; padding: 12px; border-radius: 8px; }
+.msg.power { align-self: center; width: 95%; background: rgba(0, 0, 0, 0.8); border: 1px solid var(--accent); color: #fff; text-align: center; box-shadow: inset 0 0 15px var(--accent-glow); font-weight: bold; border-radius: 8px; }
+.msg.npc { align-self: flex-start; background: rgba(20, 50, 60, 0.8); border: 1px solid #00acc1; border-bottom-left-radius: 4px; }
 
-/* Estilo do scrollbar para não quebrar a UI Mobile */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+/* --- BARRAS DE STATUS --- */
+.bar-container { width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+.bar-fill { height: 100%; transition: width 0.4s ease; }
+.fill-hp { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+.fill-san { background: #ab47bc; box-shadow: 0 0 8px #ab47bc; }
+
+/* --- NÉVOA E BOSS --- */
+.fog-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(3px); z-index: 1; pointer-events: none; display: none; }
+.boss-banner { background: rgba(20, 0, 0, 0.9); border-bottom: 2px solid var(--boss); padding: 15px; text-align: center; position: absolute; top: 0; width: 100%; z-index: 3; display: none; box-shadow: 0 4px 20px rgba(185, 28, 28, 0.5); }
+
+/* --- LAYOUTS DE GRID --- */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+.stat-box { background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); border-radius: 10px; padding: 10px; text-align: center; font-size: 12px; }
+.stat-box b { display: block; font-size: 16px; margin-top: 4px; }
+
+/* Scrollbar escondida para visual mais limpo */
+::-webkit-scrollbar { width: 0px; background: transparent; }
 </style>
 </head>
 <body onload="init()">
 
-<div class="device">
-  <div id="home" class="screen" style="padding: 20px;">
-    <h2 style="color:var(--primary); text-align: center; margin-bottom: 30px; font-size: 32px;">Miraculous RPG<small style="font-size:12px; color:var(--text-sub); display:block;">Mestre & Jogador</small></h2>
-    <div class="app-grid">
-      <div class="app-icon" onclick="go('profile')"><div class="icon-box" style="color:#42a5f5">👤</div><span>Perfil</span></div>
-      <div class="app-icon" onclick="go('sessions')"><div class="icon-box" style="color:#ab47bc">🎲</div><span>Mesas</span></div>
-      <div class="app-icon" onclick="go('sheet')"><div class="icon-box" style="color:#ffa726">📜</div><span>Ficha</span></div>
+<div id="auth-screen" style="display:flex; justify-content:center; align-items:center; height:100vh; padding:20px;">
+    <div class="glass-panel" style="width:100%; max-width:350px; text-align:center;">
+        <h2 style="color:var(--accent); margin-bottom: 5px; font-size: 28px; text-shadow: 0 0 10px var(--accent-glow);">Miraculous RPG</h2>
+        <p style="color:var(--text-muted); font-size: 12px; margin-bottom: 25px;">Sessão Global</p>
+        
+        <input type="email" id="login-email" placeholder="E-mail">
+        <input type="password" id="login-pass" placeholder="Senha">
+        <button onclick="doLogin()">Acessar Sessão</button>
+        <button class="secondary" onclick="doRegister()" style="margin-top:10px;">Criar Personagem</button>
     </div>
-  </div>
+</div>
 
-  <div id="profile" class="page">
-    <div class="header">
-      <div style="display:flex; align-items:center;"><button class="back-btn" onclick="back('profile')">‹</button> Perfil</div>
-    </div>
-    <div class="content">
-      <div id="view-login">
-        <div class="card">
-          <h3>Entrar</h3>
-          <input type="email" id="login-email" placeholder="E-mail">
-          <input type="password" id="login-pass" placeholder="Senha">
-          <button onclick="doLogin()">Entrar</button>
-          <button onclick="doRegister()" style="background:transparent; border:1px solid var(--border); margin-top:5px;">Criar Conta</button>
-          <p style="font-size:11px; color:var(--warn); text-align:center; margin-top:10px;">Lembre-se de ativar "E-mail/Senha" no console do Firebase Authentication.</p>
-        </div>
-      </div>
-      <div id="view-user" style="display:none">
-        <div class="card" style="text-align:center">
-          <img id="u-img" src="https://via.placeholder.com/80" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 10px; border: 2px solid var(--primary);">
-          <h3 id="u-name" style="margin:5px 0; color:var(--primary)">Usuário</h3>
-          <p style="font-size:12px; color:var(--text-sub);">UID: <span id="u-uid"></span></p>
-          <div style="margin-top:10px;">
-             <button onclick="becomeGM()" id="btn-become-gm" style="background:var(--warn); color:#000; margin-bottom:10px;">Tornar-se Mestre</button>
-             <button onclick="auth.signOut()" style="background:var(--danger)">Sair</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div id="app-container" style="display:none; flex-direction:column; height:100%;">
 
-  <div id="sessions" class="page">
-    <div class="header">
-      <div style="display:flex; align-items:center;"><button class="back-btn" onclick="back('sessions')">‹</button> Mesas de RPG</div>
-    </div>
-    <div class="content">
-      <div class="card">
-        <h4>Criar Nova Mesa</h4>
-        <input id="new-table-name" placeholder="Nome da Campanha">
-        <button onclick="createTable()">Criar Mesa</button>
-      </div>
-      <div id="tables-list"></div>
-    </div>
-  </div>
-
-  <div id="active-session" class="page">
-    <div class="header">
-      <div style="display:flex; align-items:center; flex:1; overflow:hidden;">
-        <button class="back-btn" onclick="leaveTable()">‹</button> 
-        <span id="session-title" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Mesa</span>
-      </div>
-      <div style="display:flex; gap:5px;">
-        <button class="btn-small" onclick="openChest()" style="background:#ffa726; color:#000;">📦 Baú</button>
-        <button id="gm-tools-btn" class="btn-small" onclick="toggleGmPanel()" style="display:none;">👑 GM</button>
-      </div>
-    </div>
-    
-    <div class="chat-container">
-      <div id="fog-layer" class="fog-overlay"></div>
-      
-      <div id="boss-panel" class="boss-bar-container">
-         <strong id="boss-name-display" style="color:var(--boss); font-size:16px;">BOSS</strong>
-         <div class="boss-hp-bg"><div id="boss-hp-fill" class="boss-hp-fill" style="width:100%"></div></div>
-         <small id="boss-hp-txt">100/100</small>
-      </div>
-
-      <div id="gm-panel" style="display:none; background:var(--bg-card); padding:10px; border-bottom:1px solid var(--primary); z-index:4; position:relative;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-           <small style="color:var(--primary); font-weight:bold;">SISTEMAS GM</small>
-           <button onclick="toggleGmPanel()" class="btn-small" style="background:var(--danger)">X</button>
-        </div>
-        <input id="gm-npc-name" type="text" placeholder="Nome do NPC (Se quiser narrar como alguém)" style="background:#000;">
-        <select id="gm-target-select" style="margin-bottom:5px; background:#000;"></select>
-        <div class="gm-toolbar" style="margin-top:5px;">
-          <button onclick="openGmInspect()" class="btn-small" style="background:#42a5f5;">🔍 Jogador</button>
-          <button onclick="toggleFog()" class="btn-small" style="background:#78909c;">🌫️ Névoa</button>
-          <button onclick="openBossControl()" class="btn-small" style="background:var(--boss);">👹 Chefe</button>
-        </div>
-      </div>
-
-      <div id="session-log" class="chat-list"></div>
-      
-      <div class="chat-input" style="padding:10px; background:var(--bg-card); z-index:4; border-top:1px solid var(--border);">
-        <div id="player-roll-area" style="display:flex; gap:5px; margin-bottom:10px; overflow-x:auto; padding-bottom:5px;"></div>
-        <div style="display:flex; gap:5px;">
-            <input id="session-msg" placeholder="Mensagem ou /narrar (GM)..." style="margin:0;" onkeydown="if(event.key==='Enter') sendSessionMsg()">
-            <button onclick="sendSessionMsg()" style="width:50px; margin:0;">➤</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-chest" class="modal" onclick="closeModal(event, 'modal-chest')">
-    <div class="modal-content">
-      <h4 style="color:#ffa726; margin-top:0;">📦 Baú Coletivo da Mesa</h4>
-      <p style="font-size:12px; color:var(--text-sub); margin-top:-10px;">Itens guardados pela equipe. Todos podem ver e retirar.</p>
-      <div id="chest-items-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px;">
-        </div>
-      <div style="display:flex; gap:5px; border-top:1px solid var(--border); padding-top:10px;">
-        <input id="new-chest-item" placeholder="Nome do Item..." style="margin:0;">
-        <button onclick="addChestItem()" style="width:80px; margin:0;">Guardar</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-boss" class="modal" onclick="closeModal(event, 'modal-boss')">
-    <div class="modal-content">
-      <h4 style="color:var(--boss)">Controle do Boss</h4>
-      <input id="boss-edit-name" placeholder="Nome do Boss">
-      <div style="display:flex; gap:5px;">
-        <input id="boss-edit-hp" type="number" placeholder="HP Atual">
-        <input id="boss-edit-maxhp" type="number" placeholder="HP Máximo">
-      </div>
-      <button onclick="saveBoss()" style="background:var(--boss); margin-top:10px;">Atualizar / Aparecer</button>
-      <button onclick="clearBoss()" style="background:transparent; border:1px solid var(--border); margin-top:5px;">Remover Boss</button>
-    </div>
-  </div>
-
-  <div id="modal-gm-inspect" class="modal" onclick="closeModal(event, 'modal-gm-inspect')">
-    <div class="modal-content">
-      <h4>Inspecionar & Editar Jogador</h4>
-      <input type="hidden" id="gm-edit-uid">
-      <b id="gm-edit-player-name" style="color:var(--primary)">Jogador</b>
-      
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:10px;">
-        <div><small>HP</small><input id="gm-edit-hp" type="number"></div>
-        <div><small>Max HP</small><input id="gm-edit-maxhp" type="number"></div>
-        <div><small>Sanidade</small><input id="gm-edit-san" type="number"></div>
-        <div><small>Fome</small><input id="gm-edit-fome" type="number"></div>
-        <div><small>Sede</small><input id="gm-edit-sede" type="number"></div>
-        <div><small>Calor</small><input id="gm-edit-calor" type="number"></div>
-      </div>
-      
-      <div style="margin-top:10px;">
-        <small>Conceder Miraculous</small>
-        <select id="gm-edit-miraculous">
-            <option value="Nenhum">Nenhum</option>
-            <option value="Joaninha (Criação)">Joaninha (Criação)</option>
-            <option value="Gato (Destruição)">Gato (Destruição)</option>
-            <option value="Borboleta (Transmissão)">Borboleta (Transmissão)</option>
-            <option value="Tartaruga (Proteção)">Tartaruga (Proteção)</option>
-            <option value="Raposa (Ilusão)">Raposa (Ilusão)</option>
-            <option value="Abelha (Ação)">Abelha (Ação)</option>
-            <option value="Pavão (Emoção)">Pavão (Emoção)</option>
-            <option value="Rato (Multiplicação)">Rato (Multiplicação)</option>
-            <option value="Touro (Determinação)">Touro (Determinação)</option>
-            <option value="Tigre (Exaltação)">Tigre (Exaltação)</option>
-            <option value="Coelho (Evolução)">Coelho (Evolução)</option>
-            <option value="Dragão (Perfeição)">Dragão (Perfeição)</option>
-            <option value="Cobra (Intuição)">Cobra (Intuição)</option>
-            <option value="Cavalo (Migração)">Cavalo (Migração)</option>
-            <option value="Cabra (Paixão)">Cabra (Paixão)</option>
-            <option value="Macaco (Derisão)">Macaco (Derisão)</option>
-            <option value="Galo (Pretensão)">Galo (Pretensão)</option>
-            <option value="Cão (Adoração)">Cão (Adoração)</option>
-            <option value="Porco (Júbilo)">Porco (Júbilo)</option>
-        </select>
-      </div>
-
-      <div style="margin-top:10px;">
-        <small>Habilidades (Edição GM)</small>
-        <div id="gm-skills-edit"></div>
-      </div>
-
-      <button onclick="gmSavePlayer()" style="background:var(--success); margin-top:15px; color:#000;">Salvar Alterações</button>
-    </div>
-  </div>
-
-  <div id="sheet" class="page">
-    <div class="header">
-      <div style="display:flex; align-items:center;"><button class="back-btn" onclick="back('sheet')">‹</button> Ficha do Personagem</div>
-    </div>
-    <div class="content">
-      <div class="card">
-        <div style="display:flex; gap:15px; align-items:center;">
-           <img id="char-img-display" src="https://via.placeholder.com/60" style="width:60px; height:60px; border-radius:10px; background:#333; object-fit:cover;">
-           <div style="flex:1;">
-             <h3 id="char-name-display" style="margin:0;">Sem Nome</h3>
-             <small style="color:var(--text-sub)">Raça: Humana</small>
-             <div id="char-miraculous-display" style="margin-top:5px;"></div>
-           </div>
+    <div id="view-chat" class="view active">
+        <div id="boss-banner" class="boss-banner">
+            <h3 id="boss-name" style="color:var(--danger); text-transform:uppercase; letter-spacing:2px; margin-bottom:5px; font-size:16px;">O BOSS</h3>
+            <div class="bar-container" style="height:12px;"><div id="boss-hp-fill" class="bar-fill fill-hp" style="width:100%"></div></div>
+            <small id="boss-hp-txt" style="font-weight:bold; color:#fff;">100/100</small>
         </div>
         
-        <div style="margin-top:15px;">
-          <div class="stat-row" style="border:none;"><span>Saúde (HP)</span><span id="hp-text">10/10</span></div>
-          <div class="hp-bar-bg"><div id="hp-bar" class="hp-bar-fill" style="width:100%"></div></div>
-          
-          <div class="stat-row" style="margin-top:10px; border:none;"><span>Sanidade</span><span id="san-text">100/100</span></div>
-          <div class="hp-bar-bg"><div id="san-bar" class="hp-bar-fill sanity-fill" style="width:100%"></div></div>
+        <div id="fog-layer" class="fog-overlay"></div>
+        <div id="chat-log" class="chat-messages"></div>
+        
+        <div class="chat-input-area">
+            <div id="player-roll-area" class="roll-buttons-row"></div>
+            <div style="display:flex; gap:10px;">
+                <input id="chat-input" placeholder="Sua ação na sessão..." style="margin:0;" onkeydown="if(event.key==='Enter') sendGlobalMsg()">
+                <button onclick="sendGlobalMsg()" style="width:55px; border-radius:10px; margin:0; padding:0; display:flex; justify-content:center; align-items:center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </div>
         </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:15px; text-align:center; font-size:12px;">
-          <div style="background:#252525; padding:8px; border-radius:8px;">Fome<br><b id="fome-txt" style="color:var(--warn)">0%</b></div>
-          <div style="background:#252525; padding:8px; border-radius:8px;">Sede<br><b id="sede-txt" style="color:#42a5f5">0%</b></div>
-          <div style="background:#252525; padding:8px; border-radius:8px;">Calor<br><b id="calor-txt" style="color:#ef5350">0%</b></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h4>Habilidades <small>(Máx 2)</small></h4>
-        <div id="skills-list"></div>
-      </div>
-
-      <div class="card">
-        <h4>Lore & Trauma</h4>
-        <div class="stat-row" style="flex-direction:column; align-items:flex-start; border:none;">
-            <span style="color:var(--primary); font-size:11px; font-weight:bold;">HISTÓRIA</span>
-            <span id="lore-display" style="font-size:13px; color:var(--text-sub); margin-top:5px; white-space:pre-wrap;">Vazio</span>
-        </div>
-        <div class="stat-row" style="flex-direction:column; align-items:flex-start; margin-top:10px; border:none;">
-            <span style="color:var(--danger); font-size:11px; font-weight:bold;">DESVANTAGENS (TRAUMAS/MEDOS)</span>
-            <span id="flaws-display" style="font-size:13px; color:var(--text-sub); margin-top:5px; white-space:pre-wrap;">Nenhum</span>
-        </div>
-      </div>
-
-      <button onclick="openEditSheet()" style="margin-bottom: 20px;">Editar Ficha (Nome/Lore)</button>
     </div>
-  </div>
 
-  <div id="modal-sheet-edit" class="modal" onclick="closeModal(event, 'modal-sheet-edit')">
-    <div class="modal-content">
-      <h4>Editar Ficha</h4>
-      <input id="p-char-name" placeholder="Nome do Personagem">
-      <textarea id="p-char-lore" placeholder="Sua História (Lore)" rows="3"></textarea>
-      <textarea id="p-char-flaws" placeholder="Traumas e Medos" rows="2"></textarea>
-      
-      <h5 style="margin: 10px 0 5px;">Habilidades (Mestre edita os pontos)</h5>
-      <input id="p-skill1-name" placeholder="Nome da Habilidade 1">
-      <input id="p-skill2-name" placeholder="Nome da Habilidade 2">
-      
-      <small style="color:var(--warn); display:block; margin:10px 0;">HP, Sanidade e Pontos de Habilidade são controlados pelo Mestre.</small>
-      <button onclick="saveSheetPlayer()">Salvar Alterações</button>
+    <div id="view-sheet" class="view">
+        <div class="glass-panel" style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+            <div style="width:65px; height:65px; border-radius:14px; background:#222; border:2px solid var(--accent); display:flex; justify-content:center; align-items:center; font-size:24px;">👤</div>
+            <div style="flex:1;">
+                <h2 id="char-name" style="font-size:20px; margin:0; color:#fff;">Sem Nome</h2>
+                <span id="char-miraculous" style="display:inline-block; margin-top:5px; font-size:11px; padding:3px 8px; background:rgba(213,0,249,0.2); border:1px solid var(--accent); border-radius:8px; color:var(--accent);">Nenhum</span>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="margin-bottom:15px;">
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;"><b>Saúde (HP)</b> <span id="sheet-hp-txt">10/10</span></div>
+            <div class="bar-container"><div id="sheet-hp-bar" class="bar-fill fill-hp" style="width:100%"></div></div>
+            
+            <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px; margin-top:12px;"><b>Sanidade</b> <span id="sheet-san-txt">100/100</span></div>
+            <div class="bar-container"><div id="sheet-san-bar" class="bar-fill fill-san" style="width:100%"></div></div>
+
+            <div class="stats-grid">
+                <div class="stat-box" style="border-color: rgba(245,158,11,0.3);">Fome<b id="sheet-fome" style="color:var(--warn)">0%</b></div>
+                <div class="stat-box" style="border-color: rgba(14,165,233,0.3);">Sede<b id="sheet-sede" style="color:#0ea5e9">0%</b></div>
+                <div class="stat-box" style="border-color: rgba(239,68,68,0.3);">Calor<b id="sheet-calor" style="color:var(--danger)">0%</b></div>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="margin-bottom:15px;">
+            <h3 style="font-size:14px; color:var(--accent); margin-bottom:10px;">Habilidades (Máx 2)</h3>
+            <div id="skills-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+
+        <div class="glass-panel" style="margin-bottom:15px;">
+            <h3 style="font-size:12px; color:var(--text-muted);">HISTÓRIA (LORE)</h3>
+            <p id="char-lore" style="font-size:13px; margin-top:5px; margin-bottom:15px; white-space:pre-wrap; line-height:1.5;">...</p>
+            
+            <h3 style="font-size:12px; color:var(--danger);">TRAUMAS E MEDOS</h3>
+            <p id="char-flaws" style="font-size:13px; margin-top:5px; white-space:pre-wrap; line-height:1.5;">...</p>
+        </div>
+
+        <div class="glass-panel">
+            <h3 style="font-size:14px; margin-bottom:10px;">Editar Base da Ficha</h3>
+            <input id="edit-name" placeholder="Nome do Personagem">
+            <textarea id="edit-lore" placeholder="Sua História (Lore)" rows="2"></textarea>
+            <textarea id="edit-flaws" placeholder="Traumas e Medos" rows="2"></textarea>
+            <input id="edit-skill1" placeholder="Nome da Hab. 1">
+            <input id="edit-skill2" placeholder="Nome da Hab. 2">
+            <p style="font-size:11px; color:var(--warn); margin-bottom:10px;">Mestre gerencia os Pontos, HP e Sanidade.</p>
+            <button onclick="saveSheetPlayer()">Salvar Alterações</button>
+        </div>
     </div>
-  </div>
 
+    <div id="view-chest" class="view">
+        <h2 style="color:var(--warn); margin-bottom: 5px;">📦 Baú Coletivo</h2>
+        <p style="font-size: 12px; color:var(--text-muted); margin-bottom: 20px;">Itens disponíveis para todos na sessão.</p>
+        
+        <div class="glass-panel" style="display:flex; gap:10px; margin-bottom:20px;">
+            <input id="new-chest-item" placeholder="Nome do Item..." style="margin:0;">
+            <button onclick="addChestItem()" style="width:80px; margin:0;">Guardar</button>
+        </div>
+
+        <div id="chest-items-list" style="display:flex; flex-direction:column; gap:10px;">
+            </div>
+    </div>
+
+    <div id="view-gm" class="view">
+        <h2 style="color:var(--success); margin-bottom: 20px;">👑 Painel do Mestre</h2>
+
+        <div class="glass-panel" style="margin-bottom:15px;">
+            <h3 style="font-size:14px; margin-bottom:10px;">Narrativa e Ambiente</h3>
+            <input id="gm-npc-name" type="text" placeholder="Nome do NPC (Deixe vazio para Narrador)">
+            <div style="display:flex; gap:10px;">
+                <button onclick="toggleGlobalFog()" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid #555; box-shadow:none;">🌫️ Alternar Névoa</button>
+            </div>
+        </div>
+
+        <div class="glass-panel" style="margin-bottom:15px; border-color:var(--boss);">
+            <h3 style="font-size:14px; color:var(--boss); margin-bottom:10px;">Controle de Ameaça (Boss)</h3>
+            <input id="gm-boss-name" placeholder="Nome do Boss">
+            <div style="display:flex; gap:10px;">
+                <input id="gm-boss-hp" type="number" placeholder="HP Atual">
+                <input id="gm-boss-maxhp" type="number" placeholder="HP Máximo">
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="saveGlobalBoss()" class="danger">Aparecer / Atualizar</button>
+                <button onclick="clearGlobalBoss()" class="secondary">Remover</button>
+            </div>
+        </div>
+
+        <div class="glass-panel">
+            <h3 style="font-size:14px; margin-bottom:10px; color:#0ea5e9;">Inspecionar Jogador</h3>
+            <select id="gm-target-select" onchange="loadPlayerToInspect()"></select>
+            
+            <div id="gm-inspect-area" style="display:none; margin-top:15px; border-top:1px solid var(--glass-border); padding-top:15px;">
+                <input type="hidden" id="gm-edit-uid">
+                <div class="stats-grid" style="grid-template-columns: 1fr 1fr; margin-top:0; margin-bottom:10px;">
+                    <div><label style="font-size:11px;">HP</label><input id="gm-edit-hp" type="number"></div>
+                    <div><label style="font-size:11px;">Max HP</label><input id="gm-edit-maxhp" type="number"></div>
+                    <div><label style="font-size:11px;">Sanidade</label><input id="gm-edit-san" type="number"></div>
+                    <div><label style="font-size:11px;">Miraculous</label>
+                        <select id="gm-edit-miraculous" style="padding:10px;">
+                            <option value="Nenhum">Nenhum</option>
+                            <option value="Joaninha (Criação)">Joaninha</option>
+                            <option value="Gato (Destruição)">Gato</option>
+                            <option value="Borboleta (Transmissão)">Borboleta</option>
+                            <option value="Tartaruga (Proteção)">Tartaruga</option>
+                            <option value="Raposa (Ilusão)">Raposa</option>
+                            <option value="Abelha (Ação)">Abelha</option>
+                            <option value="Pavão (Emoção)">Pavão</option>
+                            <option value="Rato (Multiplicação)">Rato</option>
+                            </select>
+                    </div>
+                    <div><label style="font-size:11px;">Fome</label><input id="gm-edit-fome" type="number"></div>
+                    <div><label style="font-size:11px;">Sede</label><input id="gm-edit-sede" type="number"></div>
+                    <div><label style="font-size:11px;">Calor</label><input id="gm-edit-calor" type="number"></div>
+                </div>
+
+                <div id="gm-skills-edit" style="margin-bottom:10px;"></div>
+                <button onclick="gmSavePlayer()" style="background:var(--success); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">Salvar Jogador</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-profile" class="view">
+        <div class="glass-panel" style="text-align:center;">
+            <div style="width:80px; height:80px; border-radius:50%; background:#333; margin:0 auto 15px; display:flex; justify-content:center; align-items:center; font-size:30px;">⚙️</div>
+            <h3 id="u-name" style="margin-bottom:5px; font-size:22px;">Usuário</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Sessão Global Ativa</p>
+            
+            <button onclick="becomeGM()" id="btn-become-gm" style="background:var(--warn); color:#000; box-shadow:none; margin-bottom:10px;">Promover a Mestre</button>
+            <button onclick="auth.signOut()" class="danger">Sair do RPG</button>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('chat')"><div class="nav-icon">💬</div><span>Chat</span></div>
+        <div class="nav-item" onclick="switchTab('sheet')"><div class="nav-icon">📜</div><span>Ficha</span></div>
+        <div class="nav-item" onclick="switchTab('chest')"><div class="nav-icon">📦</div><span>Baú</span></div>
+        <div id="nav-gm" class="nav-item" style="display:none;" onclick="switchTab('gm')"><div class="nav-icon">👑</div><span>GM</span></div>
+        <div class="nav-item" onclick="switchTab('profile')"><div class="nav-icon">⚙️</div><span>Perfil</span></div>
+    </nav>
 </div>
 
 <script>
 // ==========================================
-// CONFIG FIREBASE (Mantenha a sua configuração original)
+// CONFIG FIREBASE
 // ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBykDF5TNKQHejUJTp-ue7s5CKfpJp1HV0",
@@ -373,12 +325,30 @@ const db = firebase.database();
 const auth = firebase.auth();
 
 // ==========================================
-// ESTADO GLOBAL
+// ESTADO GLOBAL E NAVEGAÇÃO
 // ==========================================
 let currentUser = null;
 let userData = null;
-let currentTableId = null;
-let currentTableData = null;
+
+function switchTab(tabId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    
+    document.getElementById(`view-${tabId}`).classList.add('active');
+    
+    // Atualiza ícone ativo (baseado no onClick simplificado)
+    const items = document.querySelectorAll('.nav-item');
+    for(let item of items) {
+        if(item.getAttribute('onclick').includes(tabId)) {
+            item.classList.add('active');
+        }
+    }
+    
+    if(tabId === 'chat') {
+        const log = document.getElementById('chat-log');
+        log.scrollTop = log.scrollHeight;
+    }
+}
 
 // ==========================================
 // INICIALIZAÇÃO E AUTH
@@ -387,14 +357,13 @@ function init() {
   auth.onAuthStateChanged(user => {
     currentUser = user;
     if (user) {
-      document.getElementById('view-login').style.display = 'none';
-      document.getElementById('view-user').style.display = 'block';
-      document.getElementById('u-uid').innerText = user.uid;
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('app-container').style.display = 'flex';
       loadUserProfile();
-      loadTables();
+      loadGlobalSession();
     } else {
-      document.getElementById('view-login').style.display = 'block';
-      document.getElementById('view-user').style.display = 'none';
+      document.getElementById('auth-screen').style.display = 'flex';
+      document.getElementById('app-container').style.display = 'none';
       userData = null;
     }
   });
@@ -415,27 +384,22 @@ async function doRegister() {
       name: "Humano " + cred.user.uid.substring(0,4),
       isGM: false,
       char: {
-        name: "Sem Nome", img: "", race: "Humana",
-        hp: 20, maxHp: 20, sanity: 100,
-        fome: 0, sede: 0, calor: 0,
-        lore: "", flaws: "", miraculous: "Nenhum",
-        skills: [
-            { name: "Habilidade 1", points: 0, maxType: 10 },
-            { name: "Habilidade 2", points: 0, maxType: 20 }
-        ]
+        name: "Sem Nome", lore: "", flaws: "", miraculous: "Nenhum",
+        hp: 20, maxHp: 20, sanity: 100, fome: 0, sede: 0, calor: 0,
+        skills: [{ name: "Habilidade 1", points: 0, maxType: 10 }, { name: "Habilidade 2", points: 0, maxType: 20 }]
       }
     });
-    alert("Conta criada com sucesso!");
-  } catch(e) { alert("Erro ao criar conta: " + e.message); }
+    alert("Conta criada! Logando...");
+  } catch(e) { alert("Erro: " + e.message); }
 }
 
 function becomeGM() {
     if(!currentUser) return;
-    db.ref(`users/${currentUser.uid}/isGM`).set(true).then(() => alert("Você agora é um Mestre!"));
+    db.ref(`users/${currentUser.uid}/isGM`).set(true).then(() => alert("Você foi promovido a Mestre!"));
 }
 
 // ==========================================
-// PERFIL E FICHA DO JOGADOR
+// PERFIL E FICHA (Sincronização em Tempo Real)
 // ==========================================
 function loadUserProfile() {
   if(!currentUser) return;
@@ -443,73 +407,53 @@ function loadUserProfile() {
     userData = snap.val() || {};
     
     document.getElementById('u-name').innerText = userData.name || "Sem Nome";
+    document.getElementById('nav-gm').style.display = userData.isGM ? 'flex' : 'none';
     document.getElementById('btn-become-gm').style.display = userData.isGM ? 'none' : 'block';
     
     const c = userData.char || {};
-    document.getElementById('char-name-display').innerText = c.name || "Sem nome";
     
-    document.getElementById('hp-text').innerText = `${c.hp || 0}/${c.maxHp || 1}`;
-    document.getElementById('hp-bar').style.width = Math.min(100, Math.max(0, ((c.hp||0)/(c.maxHp||1))*100)) + "%";
-    document.getElementById('san-text').innerText = `${c.sanity || 0}/100`;
-    document.getElementById('san-bar').style.width = Math.min(100, Math.max(0, c.sanity||0)) + "%";
+    // UI da Ficha
+    document.getElementById('char-name').innerText = c.name || "Sem nome";
+    document.getElementById('char-miraculous').innerText = c.miraculous !== "Nenhum" ? `💎 ${c.miraculous}` : "Sem Miraculous";
     
-    document.getElementById('fome-txt').innerText = (c.fome||0) + "%";
-    document.getElementById('sede-txt').innerText = (c.sede||0) + "%";
-    document.getElementById('calor-txt').innerText = (c.calor||0) + "%";
+    document.getElementById('sheet-hp-txt').innerText = `${c.hp || 0}/${c.maxHp || 1}`;
+    document.getElementById('sheet-hp-bar').style.width = Math.min(100, Math.max(0, ((c.hp||0)/(c.maxHp||1))*100)) + "%";
     
-    document.getElementById('lore-display').innerText = c.lore || "Sua história...";
-    document.getElementById('flaws-display').innerText = c.flaws || "Sem traumas definidos.";
+    document.getElementById('sheet-san-txt').innerText = `${c.sanity || 0}/100`;
+    document.getElementById('sheet-san-bar').style.width = Math.min(100, Math.max(0, c.sanity||0)) + "%";
     
-    const mirDiv = document.getElementById('char-miraculous-display');
-    if(c.miraculous && c.miraculous !== "Nenhum") {
-        mirDiv.innerHTML = `<span class="miraculous-tag">💎 ${c.miraculous}</span>`;
-    } else {
-        mirDiv.innerHTML = "";
-    }
+    document.getElementById('sheet-fome').innerText = (c.fome||0) + "%";
+    document.getElementById('sheet-sede').innerText = (c.sede||0) + "%";
+    document.getElementById('sheet-calor').innerText = (c.calor||0) + "%";
+    
+    document.getElementById('char-lore').innerText = c.lore || "Nada registrado.";
+    document.getElementById('char-flaws').innerText = c.flaws || "Nenhum trauma.";
 
     renderSkills(c.skills);
     
-    document.getElementById('p-char-name').value = c.name || "";
-    document.getElementById('p-char-lore').value = c.lore || "";
-    document.getElementById('p-char-flaws').value = c.flaws || "";
+    // Inputs de Edição
+    document.getElementById('edit-name').value = c.name || "";
+    document.getElementById('edit-lore').value = c.lore || "";
+    document.getElementById('edit-flaws').value = c.flaws || "";
     if(c.skills && c.skills.length > 0) {
-        document.getElementById('p-skill1-name').value = c.skills[0].name || "";
-        document.getElementById('p-skill2-name').value = c.skills[1]?.name || "";
+        document.getElementById('edit-skill1').value = c.skills[0].name || "";
+        document.getElementById('edit-skill2').value = c.skills[1]?.name || "";
     }
 
     renderRollButtonsChat(c.skills, c.miraculous);
   });
 }
 
-// === CORREÇÃO DA LÓGICA DE DADOS (10 OU 20 PONTOS) ===
 function calculateSkillLogic(pts, maxType) {
-    let rank = "Iniciante";
-    let dice = 1;
-    pts = parseInt(pts) || 0;
-    maxType = parseInt(maxType) || 10;
+    let rank = "Iniciante", dice = 1;
+    pts = parseInt(pts) || 0; maxType = parseInt(maxType) || 10;
 
     if (maxType === 10) {
-        if (pts >= 10) { 
-            rank = "Expert"; 
-            dice = 4 + (pts - 10); 
-        } else if (pts >= 5) { 
-            rank = "Intermediário"; 
-            dice = 2; 
-        } else {
-            rank = "Iniciante";
-            dice = 1;
-        }
-    } else if (maxType === 20) {
-        if (pts >= 15) { 
-            rank = "Expert"; 
-            dice = 4 + (pts - 15); 
-        } else if (pts >= 6) { // Primeiros 5 = ini (0-5), então 6-14 é Intermediário.
-            rank = "Intermediário"; 
-            dice = 2; 
-        } else {
-            rank = "Iniciante";
-            dice = 1;
-        }
+        if (pts >= 10) { rank = "Expert"; dice = 4 + (pts - 10); } 
+        else if (pts >= 5) { rank = "Intermediário"; dice = 2; } 
+    } else {
+        if (pts >= 15) { rank = "Expert"; dice = 4 + (pts - 15); } 
+        else if (pts >= 6) { rank = "Intermediário"; dice = 2; } 
     }
     return { rank, dice };
 }
@@ -517,139 +461,109 @@ function calculateSkillLogic(pts, maxType) {
 function renderSkills(skills) {
     const list = document.getElementById('skills-list');
     list.innerHTML = "";
-    if(!skills || skills.length === 0) return;
+    if(!skills) return;
     skills.forEach(sk => {
         if(!sk.name) return;
         const calc = calculateSkillLogic(sk.points, sk.maxType);
         list.innerHTML += `
-        <div class="skill-box">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <b>${sk.name}</b>
+        <div style="background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); padding:10px; border-radius:10px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <b style="color:var(--accent); font-size:14px;">${sk.name}</b>
+                <span style="font-size:12px; color:var(--text-muted);">${sk.points}/${sk.maxType} pts</span>
             </div>
-            <div style="margin-top:5px; color:var(--text-sub); display:flex; justify-content:space-between;">
-                <span>Nível: <span style="color:#fff">${calc.rank} (${calc.dice}d20)</span></span>
-                <span>${sk.points}/${sk.maxType} pts</span>
-            </div>
+            <div style="font-size:12px; color:#fff;">Nível: ${calc.rank} <span style="color:var(--warn);">(${calc.dice}d20)</span></div>
         </div>`;
     });
 }
 
-function openEditSheet() { document.getElementById('modal-sheet-edit').style.display = 'flex'; }
-
 function saveSheetPlayer() {
   if(!currentUser) return;
-  const s1 = document.getElementById('p-skill1-name').value;
-  const s2 = document.getElementById('p-skill2-name').value;
-
   db.ref(`users/${currentUser.uid}/char`).update({
-    name: document.getElementById('p-char-name').value,
-    lore: document.getElementById('p-char-lore').value,
-    flaws: document.getElementById('p-char-flaws').value
+    name: document.getElementById('edit-name').value,
+    lore: document.getElementById('edit-lore').value,
+    flaws: document.getElementById('edit-flaws').value
   });
-  db.ref(`users/${currentUser.uid}/char/skills/0/name`).set(s1);
-  db.ref(`users/${currentUser.uid}/char/skills/1/name`).set(s2);
-
-  closeModal(null, 'modal-sheet-edit');
+  db.ref(`users/${currentUser.uid}/char/skills/0/name`).set(document.getElementById('edit-skill1').value);
+  db.ref(`users/${currentUser.uid}/char/skills/1/name`).set(document.getElementById('edit-skill2').value);
+  alert("Ficha salva!");
 }
 
 // ==========================================
-// MESAS E CHAT
+// SESSÃO GLOBAL (CHAT, BOSS, AMBIENTE, BAÚ)
 // ==========================================
-function createTable() {
-  const name = document.getElementById('new-table-name').value;
-  if (!name) return;
-  db.ref('tables').push().set({
-    name: name, master: currentUser.uid, fog: false, boss: { active: false },
-    members: { [currentUser.uid]: { name: userData.name, role: 'GM' } }
-  });
-  document.getElementById('new-table-name').value = "";
-}
-
-function loadTables() {
-  db.ref('tables').on('value', snap => {
-    const div = document.getElementById('tables-list');
-    div.innerHTML = "";
-    snap.forEach(child => {
-      div.innerHTML += `<div class="card" style="cursor:pointer; border-left:4px solid var(--primary);" onclick="joinTable('${child.key}')"><b>🎲 ${child.val().name}</b></div>`;
+function loadGlobalSession() {
+    // Carrega Chat
+    const chatDiv = document.getElementById('chat-log');
+    chatDiv.innerHTML = "";
+    db.ref('global_session/log').off();
+    db.ref('global_session/log').limitToLast(50).on('child_added', snap => {
+        const m = snap.val();
+        let cls = (m.uid === currentUser.uid && !m.isNpc) ? 'me' : 'other';
+        if (m.type === 'system') cls = 'system';
+        if (m.type === 'narrate') cls = 'narrate';
+        if (m.type === 'power') cls = 'power';
+        if (m.isNpc) cls = 'npc';
+        
+        let html = `<div class="msg ${cls}">`;
+        if (!['system', 'narrate', 'power'].includes(m.type)) {
+            let title = m.u;
+            if(m.isNpc) title = `🎭 ${m.u}`;
+            html += `<div class="msg-header">${title}</div>`;
+        }
+        html += `${m.txt}</div>`;
+        
+        chatDiv.innerHTML += html;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
     });
-  });
-}
 
-function joinTable(id) {
-  currentTableId = id;
-  db.ref(`tables/${id}/members/${currentUser.uid}`).update({
-      name: userData.name || "Jogador",
-      role: userData.isGM ? 'GM' : 'PLAYER'
-  });
-  
-  db.ref(`tables/${id}`).on('value', snap => {
-    currentTableData = snap.val();
-    if(!currentTableData) return;
-    
-    document.getElementById('session-title').innerText = currentTableData.name;
-    
-    if (userData.isGM) {
-      document.getElementById('gm-tools-btn').style.display = 'block';
-      loadGmControls();
-    } else {
-      document.getElementById('gm-tools-btn').style.display = 'none';
-      document.getElementById('gm-panel').style.display = 'none';
+    // Carrega Ambiente (Boss e Névoa)
+    db.ref('global_session/environment').on('value', snap => {
+        const env = snap.val() || {};
+        document.getElementById('fog-layer').style.display = env.fog ? 'block' : 'none';
+        
+        const boss = env.boss || { active: false };
+        if(boss.active) {
+            document.getElementById('boss-banner').style.display = 'block';
+            document.getElementById('boss-name').innerText = boss.name;
+            document.getElementById('boss-hp-txt').innerText = `${boss.hp}/${boss.maxHp}`;
+            document.getElementById('boss-hp-fill').style.width = Math.min(100, Math.max(0, (boss.hp/boss.maxHp)*100)) + "%";
+        } else {
+            document.getElementById('boss-banner').style.display = 'none';
+        }
+    });
+
+    // Carrega Baú
+    db.ref('global_session/chest').on('value', snap => {
+        const div = document.getElementById('chest-items-list');
+        div.innerHTML = "";
+        let hasItems = false;
+        snap.forEach(child => {
+            hasItems = true;
+            div.innerHTML += `
+            <div class="glass-panel" style="display:flex; justify-content:space-between; align-items:center; padding:10px 15px;">
+                <div>
+                    <b style="color:#fff;">${child.val().name}</b><br>
+                    <small style="color:var(--text-muted); font-size:10px;">Guardado por: ${child.val().addedBy}</small>
+                </div>
+                <button onclick="removeChestItem('${child.key}', '${child.val().name}')" class="danger" style="width:auto; padding:6px 12px; font-size:12px;">Pegar</button>
+            </div>`;
+        });
+        if(!hasItems) div.innerHTML = "<p style='text-align:center; color:var(--text-muted); font-size:13px;'>O baú está completamente vazio.</p>";
+    });
+
+    // Popula Select de Jogadores para o GM
+    if(userData && userData.isGM) {
+        db.ref('users').on('value', snap => {
+            const sel = document.getElementById('gm-target-select');
+            sel.innerHTML = "<option value=''>Selecione um jogador...</option>";
+            snap.forEach(u => {
+                sel.innerHTML += `<option value="${u.key}">${u.val().char?.name || u.val().name}</option>`;
+            });
+        });
     }
-
-    document.getElementById('fog-layer').style.display = currentTableData.fog ? 'block' : 'none';
-
-    const boss = currentTableData.boss || {};
-    if(boss.active) {
-        document.getElementById('boss-panel').style.display = 'block';
-        document.getElementById('boss-name-display').innerText = boss.name;
-        document.getElementById('boss-hp-txt').innerText = `${boss.hp}/${boss.maxHp}`;
-        document.getElementById('boss-hp-fill').style.width = Math.min(100, Math.max(0, (boss.hp/boss.maxHp)*100)) + "%";
-    } else {
-        document.getElementById('boss-panel').style.display = 'none';
-    }
-  });
-
-  loadTableChat(id);
-  loadChestData(id); // Carrega dados do baú
-  go('active-session');
 }
 
-function leaveTable() {
-  if(currentTableId) {
-      db.ref(`tables/${currentTableId}/log`).off();
-      db.ref(`tables/${currentTableId}`).off();
-      db.ref(`tables/${currentTableId}/chest`).off();
-  }
-  currentTableId = null;
-  back('active-session');
-}
-
-function loadTableChat(id) {
-  const div = document.getElementById('session-log');
-  div.innerHTML = "";
-  db.ref(`tables/${id}/log`).off();
-  db.ref(`tables/${id}/log`).limitToLast(50).on('child_added', snap => {
-    const m = snap.val();
-    let cls = (m.uid === currentUser.uid && !m.isNpc) ? 'me' : 'other';
-    if (m.type === 'system') cls = 'system';
-    if (m.type === 'narrate') cls = 'narrate';
-    if (m.type === 'power') cls = 'power';
-    if (m.isNpc) cls = 'npc';
-    
-    let html = `<div class="msg ${cls}">`;
-    if (m.type !== 'system' && m.type !== 'narrate' && m.type !== 'power') {
-        let title = m.u;
-        if(m.isNpc) title = `🎭 ${m.u} (NPC)`;
-        html += `<b style="font-size:11px; opacity:0.8;">${title}</b><br>`;
-    }
-    html += `${m.txt}</div>`;
-    
-    div.innerHTML += html;
-    div.scrollTop = div.scrollHeight;
-  });
-}
-
-// === BOTÕES DE ROLAGEM E PODERES MIRACULOUS ===
+// === ROLAGENS GERAIS E MIRACULOUS ===
 function renderRollButtonsChat(skills, miraculous) {
     const area = document.getElementById('player-roll-area');
     area.innerHTML = "";
@@ -658,102 +572,82 @@ function renderRollButtonsChat(skills, miraculous) {
         skills.forEach(sk => {
             if(!sk.name) return;
             const calc = calculateSkillLogic(sk.points, sk.maxType);
-            const btn = document.createElement('button');
-            btn.innerText = `🎲 ${sk.name} (${calc.dice}d20)`;
-            btn.style = "font-size:11px; padding:6px; white-space:nowrap; background:#444;";
-            btn.onclick = () => rollDiceInChat(sk.name, calc.dice);
-            area.appendChild(btn);
+            area.innerHTML += `<button style="background:rgba(255,255,255,0.1); border:1px solid #555;" onclick="rollDiceInChat('${sk.name}', ${calc.dice})">🎲 ${sk.name}</button>`;
         });
     }
-
     if(miraculous && miraculous !== "Nenhum") {
-        const pBtn = document.createElement('button');
-        let shortName = miraculous.split(' ')[0]; // Pega só o nome do bicho
-        pBtn.innerText = `✨ Poder ${shortName}`;
-        pBtn.style = "font-size:11px; padding:6px; white-space:nowrap; background: linear-gradient(45deg, #d500f9, #6200ea); color:#fff; border:1px solid #fff;";
-        pBtn.onclick = () => rollMiraculousPower(miraculous);
-        area.appendChild(pBtn);
+        let shortName = miraculous.split(' ')[0];
+        area.innerHTML += `<button style="background:linear-gradient(45deg, #d500f9, #6200ea); border:none;" onclick="rollMiraculousPower('${miraculous}')">✨ Poder ${shortName}</button>`;
     }
 }
 
 function rollDiceInChat(skillName, diceCount) {
-    if(!currentTableId) return alert("Você precisa estar em uma mesa para rolar.");
-    let results = [];
-    let total = 0;
+    let results = [], total = 0;
     for(let i=0; i<diceCount; i++) {
         let r = Math.floor(Math.random() * 20) + 1;
-        results.push(r);
-        total += r;
+        results.push(r); total += r;
     }
     pushLog(`Usou [${skillName}] e rolou ${diceCount}d20: \n[ ${results.join(' | ')} ] \nSoma: ${total}`, 'system');
 }
 
-// === LÓGICA DOS PODERES DOS MIRACULOUS ===
 function rollMiraculousPower(miraculous) {
-    if(!currentTableId) return;
     let name = miraculous.split(' ')[0].toUpperCase();
     let msg = `💎 PODER MIRACULOUS: ${name} 💎\n`;
 
     if(name === "GATO") {
-        let roll = Math.floor(Math.random() * 3) + 1; // 1d3
+        let roll = Math.floor(Math.random() * 3) + 1;
         msg += `[Rolou 1d3]: ${roll}\n\n`;
-        if(roll === 3) msg += "⚠️ EFEITO: INSTAKILL no alvo!";
-        if(roll === 2) msg += "⚠️ EFEITO: Causa dano equivalente a METADE da vida do alvo.";
-        if(roll === 1) msg += "⚠️ EFEITO: Sofre um ferimento leve, mas causa um ferimento contínuo no inimigo.";
+        if(roll === 3) msg += "⚠️ INSTAKILL no alvo!";
+        if(roll === 2) msg += "⚠️ Causa dano equivalente a METADE da vida do alvo.";
+        if(roll === 1) msg += "⚠️ Sofre um ferimento leve, mas causa um ferimento contínuo no inimigo.";
     } 
     else if(name === "JOANINHA") {
-        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
-        msg += `[Rolou 1d10]: ${roll}\n\n`;
-        msg += "🐞 EFEITO: Pode criar 3 coisas por turno (Atributos, Itens ou Recuperar algo perdido).";
+        let roll = Math.floor(Math.random() * 10) + 1;
+        msg += `[Rolou 1d10]: ${roll}\n\nPode criar 3 coisas por turno.`;
     }
     else if(name === "ABELHA") {
-        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
-        msg += `[Rolou 1d10]: ${roll}\n\n`;
-        msg += `🐝 EFEITO: O alvo ficará paralisado por ${roll} minutos!`;
+        let roll = Math.floor(Math.random() * 10) + 1;
+        msg += `[Rolou 1d10]: ${roll}\n\nO alvo ficará paralisado por ${roll} minutos!`;
     }
     else if(name === "TARTARUGA") {
-        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
-        msg += `[Rolou 1d10]: ${roll}\n\n`;
-        msg += `🐢 EFEITO: Cria um escudo invulnerável por ${roll} minutos! (O portador fica imobilizado).`;
+        let roll = Math.floor(Math.random() * 10) + 1;
+        msg += `[Rolou 1d10]: ${roll}\n\nCria um escudo invulnerável por ${roll} minutos! (Portador imobilizado).`;
     }
     else if(name === "PAVÃO") {
-        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
-        msg += `[Rolou 1d10]: ${roll}\n\n`;
-        msg += `🦚 EFEITO: Criou um Amok! Você perde ${roll} pontos de SANIDADE enquanto durar o controle (reversível).`;
+        let roll = Math.floor(Math.random() * 10) + 1;
+        msg += `[Rolou 1d10]: ${roll}\n\nCriou um Sentimonstro! Perde ${roll} de SANIDADE durante o controle.`;
     }
     else if(name === "RATO") {
-        let multi = Math.floor(Math.random() * 10) + 1; // 1d10
-        let dano = Math.floor(Math.random() * 3) + 1; // 1d3
-        msg += `[Rolou 1d10 Multiplicador]: ${multi}\n[Rolou 1d3 Dano]: ${dano}\n\n`;
-        msg += `🐭 EFEITO: Multiplica o efeito por ${multi}x! O portador sofre a consequência nível ${dano} do esforço.`;
+        let multi = Math.floor(Math.random() * 10) + 1;
+        let dano = Math.floor(Math.random() * 3) + 1;
+        msg += `[Multiplicador 1d10]: ${multi}\n[Dano de Esforço 1d3]: ${dano}\n\nMultiplica o efeito por ${multi}x!`;
     }
     else {
-        // Regra geral para os outros
-        let roll = Math.floor(Math.random() * 10) + 1; // 1d10
-        msg += `[Rolou 1d10]: ${roll}\n\n`;
-        msg += `✨ EFEITO: Poder ativado com magnitude ${roll}. Aguarde o Mestre narrar as consequências.`;
+        let roll = Math.floor(Math.random() * 10) + 1;
+        msg += `[Rolou 1d10]: ${roll}\n\nPoder ativado com magnitude ${roll}.`;
     }
-
     pushLog(msg, 'power');
 }
 
-function sendSessionMsg() {
-  const txt = document.getElementById('session-msg').value;
-  if (!txt || !currentTableId) return;
+function sendGlobalMsg() {
+  const txt = document.getElementById('chat-input').value;
+  if (!txt) return;
   
   const npcName = document.getElementById('gm-npc-name') ? document.getElementById('gm-npc-name').value : "";
 
   if (txt.startsWith('/narrar ') && userData.isGM) {
     pushLog(txt.replace('/narrar ', ''), 'narrate');
+  } else if (userData.isGM && npcName !== "") {
+    pushLog(txt, null, npcName);
   } else {
-    pushLog(txt, null, (userData.isGM && npcName !== "") ? npcName : null);
+    pushLog(txt);
   }
-  document.getElementById('session-msg').value = "";
+  document.getElementById('chat-input').value = "";
 }
 
 function pushLog(txt, type = null, overrideName = null) {
   if(!currentUser) return;
-  db.ref(`tables/${currentTableId}/log`).push({
+  db.ref('global_session/log').push({
     u: overrideName ? overrideName : (userData.char?.name || userData.name),
     uid: currentUser.uid,
     txt: txt,
@@ -763,177 +657,110 @@ function pushLog(txt, type = null, overrideName = null) {
   });
 }
 
-// ==========================================
-// BAÚ COLETIVO
-// ==========================================
-function openChest() {
-    if(!currentTableId) return;
-    document.getElementById('modal-chest').style.display = 'flex';
-}
-
-function loadChestData(id) {
-    db.ref(`tables/${id}/chest`).on('value', snap => {
-        const div = document.getElementById('chest-items-list');
-        div.innerHTML = "";
-        let hasItems = false;
-        snap.forEach(child => {
-            hasItems = true;
-            div.innerHTML += `
-            <div class="stat-row">
-                <span style="color:#fff;">${child.val().name} <small style="color:var(--text-sub); font-size:10px;">(por ${child.val().addedBy})</small></span>
-                <button onclick="removeChestItem('${child.key}', '${child.val().name}')" class="btn-small" style="background:var(--danger)">Retirar</button>
-            </div>`;
-        });
-        if(!hasItems) div.innerHTML = "<p style='font-size:12px; color:var(--text-sub); text-align:center;'>O baú está vazio.</p>";
-    });
-}
-
+// === BAÚ ===
 function addChestItem() {
     const itemName = document.getElementById('new-chest-item').value;
-    if(!itemName || !currentTableId) return;
-    
-    db.ref(`tables/${currentTableId}/chest`).push({
-        name: itemName,
-        addedBy: userData.char?.name || userData.name
-    });
-    
+    if(!itemName) return;
+    db.ref('global_session/chest').push({ name: itemName, addedBy: userData.char?.name || userData.name });
     document.getElementById('new-chest-item').value = "";
-    pushLog(`Guardou um item no Baú Coletivo: [${itemName}]`, 'system');
+    pushLog(`Guardou no Baú Coletivo: [${itemName}]`, 'system');
 }
-
 function removeChestItem(key, itemName) {
-    if(!currentTableId) return;
-    db.ref(`tables/${currentTableId}/chest/${key}`).remove();
+    db.ref(`global_session/chest/${key}`).remove();
     pushLog(`Retirou do Baú Coletivo: [${itemName}]`, 'system');
 }
 
-// ==========================================
-// CONTROLES DO MESTRE (GM)
-// ==========================================
-function loadGmControls() {
-  db.ref(`tables/${currentTableId}/members`).on('value', snap => {
-    const sel = document.getElementById('gm-target-select');
-    sel.innerHTML = "";
-    snap.forEach(c => {
-      sel.innerHTML += `<option value="${c.key}">${c.val().name}</option>`;
+// === MESTRE (GM) ===
+function toggleGlobalFog() {
+    db.ref('global_session/environment/fog').once('value', snap => {
+        db.ref('global_session/environment/fog').set(!snap.val());
     });
-  });
 }
 
-function toggleGmPanel() {
-  const p = document.getElementById('gm-panel');
-  p.style.display = p.style.display === 'none' ? 'block' : 'none';
-}
-
-function toggleFog() {
-    if(!currentTableData) return;
-    db.ref(`tables/${currentTableId}/fog`).set(!currentTableData.fog);
-}
-
-function openBossControl() {
-    document.getElementById('modal-boss').style.display = 'flex';
-    if(currentTableData && currentTableData.boss) {
-        document.getElementById('boss-edit-name').value = currentTableData.boss.name || "";
-        document.getElementById('boss-edit-hp').value = currentTableData.boss.hp || "";
-        document.getElementById('boss-edit-maxhp').value = currentTableData.boss.maxHp || "";
-    }
-}
-
-function saveBoss() {
-    db.ref(`tables/${currentTableId}/boss`).update({
+function saveGlobalBoss() {
+    db.ref('global_session/environment/boss').update({
         active: true,
-        name: document.getElementById('boss-edit-name').value,
-        hp: parseInt(document.getElementById('boss-edit-hp').value),
-        maxHp: parseInt(document.getElementById('boss-edit-maxhp').value)
+        name: document.getElementById('gm-boss-name').value || "Desconhecido",
+        hp: parseInt(document.getElementById('gm-boss-hp').value || 100),
+        maxHp: parseInt(document.getElementById('gm-boss-maxhp').value || 100)
     });
-    closeModal(null, 'modal-boss');
-    pushLog("O ambiente escurece. Uma presença hostil e poderosa se aproxima...", "narrate");
+    pushLog("Uma entidade letal surge na área...", "narrate");
 }
 
-function clearBoss() {
-    db.ref(`tables/${currentTableId}/boss/active`).set(false);
-    closeModal(null, 'modal-boss');
+function clearGlobalBoss() {
+    db.ref('global_session/environment/boss/active').set(false);
 }
 
-function openGmInspect() {
-  const inspectingUid = document.getElementById('gm-target-select').value;
-  if (!inspectingUid) return alert("Selecione um jogador na lista.");
-  
-  db.ref(`users/${inspectingUid}`).once('value', snap => {
-    const u = snap.val();
-    if(!u || !u.char) return alert("Ficha do jogador não encontrada.");
+function loadPlayerToInspect() {
+    const uid = document.getElementById('gm-target-select').value;
+    if(!uid) { document.getElementById('gm-inspect-area').style.display = 'none'; return; }
     
-    const c = u.char;
-    document.getElementById('gm-edit-uid').value = inspectingUid;
-    document.getElementById('gm-edit-player-name').innerText = u.name;
-    
-    document.getElementById('gm-edit-hp').value = c.hp || 0;
-    document.getElementById('gm-edit-maxhp').value = c.maxHp || 0;
-    document.getElementById('gm-edit-san').value = c.sanity || 100;
-    document.getElementById('gm-edit-fome').value = c.fome || 0;
-    document.getElementById('gm-edit-sede').value = c.sede || 0;
-    document.getElementById('gm-edit-calor').value = c.calor || 0;
-    document.getElementById('gm-edit-miraculous').value = c.miraculous || "Nenhum";
-    
-    const skDiv = document.getElementById('gm-skills-edit');
-    skDiv.innerHTML = "";
-    if(c.skills) {
-        c.skills.forEach((sk, idx) => {
-            skDiv.innerHTML += `
-            <div style="border:1px solid #333; padding:5px; margin-bottom:5px; border-radius:5px;">
-                <b>${sk.name || 'Habilidade '+(idx+1)}</b><br>
-                <div style="display:flex; gap:5px; margin-top:5px;">
-                    <input id="gm-sk-pts-${idx}" type="number" placeholder="Pontos Atuais" value="${sk.points}">
-                    <select id="gm-sk-max-${idx}">
-                        <option value="10" ${sk.maxType===10?'selected':''}>Máximo 10 Pts</option>
-                        <option value="20" ${sk.maxType===20?'selected':''}>Máximo 20 Pts</option>
-                    </select>
-                </div>
-            </div>`;
-        });
-    }
-    document.getElementById('modal-gm-inspect').style.display = 'flex';
-  });
+    db.ref(`users/${uid}`).once('value', snap => {
+        const u = snap.val();
+        if(!u || !u.char) return;
+        const c = u.char;
+        
+        document.getElementById('gm-edit-uid').value = uid;
+        document.getElementById('gm-edit-hp').value = c.hp || 0;
+        document.getElementById('gm-edit-maxhp').value = c.maxHp || 0;
+        document.getElementById('gm-edit-san').value = c.sanity || 100;
+        document.getElementById('gm-edit-fome').value = c.fome || 0;
+        document.getElementById('gm-edit-sede').value = c.sede || 0;
+        document.getElementById('gm-edit-calor').value = c.calor || 0;
+        
+        let selectMir = document.getElementById('gm-edit-miraculous');
+        Array.from(selectMir.options).forEach(opt => { if(opt.value.includes(c.miraculous)) selectMir.value = opt.value; });
+
+        const skDiv = document.getElementById('gm-skills-edit');
+        skDiv.innerHTML = "";
+        if(c.skills) {
+            c.skills.forEach((sk, idx) => {
+                skDiv.innerHTML += `
+                <div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; margin-bottom:5px;">
+                    <b style="font-size:12px;">${sk.name || 'Hab '+(idx+1)}</b>
+                    <div style="display:flex; gap:10px; margin-top:5px;">
+                        <input id="gm-sk-pts-${idx}" type="number" value="${sk.points}" style="margin:0;">
+                        <select id="gm-sk-max-${idx}" style="margin:0;">
+                            <option value="10" ${sk.maxType===10?'selected':''}>Máx 10</option>
+                            <option value="20" ${sk.maxType===20?'selected':''}>Máx 20</option>
+                        </select>
+                    </div>
+                </div>`;
+            });
+        }
+        document.getElementById('gm-inspect-area').style.display = 'block';
+    });
 }
 
 function gmSavePlayer() {
-  const uid = document.getElementById('gm-edit-uid').value;
-  if(!uid) return;
-  
-  db.ref(`users/${uid}/char`).update({
-    hp: parseInt(document.getElementById('gm-edit-hp').value),
-    maxHp: parseInt(document.getElementById('gm-edit-maxhp').value),
-    sanity: parseInt(document.getElementById('gm-edit-san').value),
-    fome: parseInt(document.getElementById('gm-edit-fome').value),
-    sede: parseInt(document.getElementById('gm-edit-sede').value),
-    calor: parseInt(document.getElementById('gm-edit-calor').value),
-    miraculous: document.getElementById('gm-edit-miraculous').value
-  });
-  
-  for(let i=0; i<2; i++) {
-      let ptEl = document.getElementById(`gm-sk-pts-${i}`);
-      let maxEl = document.getElementById(`gm-sk-max-${i}`);
-      if(ptEl && maxEl) {
-          db.ref(`users/${uid}/char/skills/${i}`).update({
-              points: parseInt(ptEl.value),
-              maxType: parseInt(maxEl.value)
-          });
-      }
-  }
-
-  closeModal(null, 'modal-gm-inspect');
-  pushLog(`O Mestre alterou misteriosamente as propriedades de um portador.`, "system");
+    const uid = document.getElementById('gm-edit-uid').value;
+    if(!uid) return;
+    
+    let mirValue = document.getElementById('gm-edit-miraculous').value;
+    if (mirValue !== "Nenhum") mirValue = mirValue.split(' (')[0]; // Pega só o nome principal
+    
+    db.ref(`users/${uid}/char`).update({
+        hp: parseInt(document.getElementById('gm-edit-hp').value),
+        maxHp: parseInt(document.getElementById('gm-edit-maxhp').value),
+        sanity: parseInt(document.getElementById('gm-edit-san').value),
+        fome: parseInt(document.getElementById('gm-edit-fome').value),
+        sede: parseInt(document.getElementById('gm-edit-sede').value),
+        calor: parseInt(document.getElementById('gm-edit-calor').value),
+        miraculous: mirValue
+    });
+    
+    for(let i=0; i<2; i++) {
+        let ptEl = document.getElementById(`gm-sk-pts-${i}`);
+        let maxEl = document.getElementById(`gm-sk-max-${i}`);
+        if(ptEl && maxEl) {
+            db.ref(`users/${uid}/char/skills/${i}`).update({
+                points: parseInt(ptEl.value), maxType: parseInt(maxEl.value)
+            });
+        }
+    }
+    alert("Dados do jogador atualizados!");
+    pushLog(`O universo ajustou a existência de um portador.`, "system");
 }
-
-// ==========================================
-// UTILITÁRIOS
-// ==========================================
-function closeModal(e, id) {
-  if (e && e.target.id !== id) return;
-  document.getElementById(id).style.display = 'none';
-}
-function go(id) { document.getElementById(id).classList.add('active'); }
-function back(id) { document.getElementById(id).classList.remove('active'); }
 </script>
 </body>
 </html>
